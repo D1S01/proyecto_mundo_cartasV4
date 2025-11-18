@@ -1,0 +1,19 @@
+{% extends 'tienda/base.html' %}
+{% block content %}
+
+<h2>Ventas por día</h2>
+<hr>
+
+{% if dias %}
+    <ul>
+    {% for i in dias %}
+        <li>
+            <a href="{% url 'reporte_ventas' i %}">{{ i }}</a>
+        </li>
+    {% endfor %}
+    </ul>
+{% else %}
+    <p>No hay ventas registradas.</p>
+{% endif %}
+
+{% endblock %}

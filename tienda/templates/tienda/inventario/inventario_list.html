@@ -7,9 +7,12 @@
     <li class="nav-item">
               <a class="nav-link" href="{% url 'categoria-list' %}">Categorias</a>
     </li>
-    <form method="get" action="{% url 'buscar-inventario' %}">
-        <input type="text" name="buscar" value="{{ query }}" placeholder="Buscar producto...">
-        <button type="submit">Buscar</button>
+     <form method="get" class="d-flex mb-4">
+      <input type="text" name="q" value="{{ query }}" placeholder="Buscar por nombre..."
+             class="form-control me-2">
+      <button type="submit" class="btn btn-primary">
+        <i class="bi bi-search"></i> Buscar
+      </button>
     </form>
     <table>
         <thead>

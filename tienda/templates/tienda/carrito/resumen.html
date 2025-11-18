@@ -34,15 +34,15 @@
 <table border="1" cellpadding="8" cellspacing="0">
     <tr>
         <td>Subtotal:</td>
-        <td>${{ subtotal }}</td> 
+        <td>${{ sin_iva|floatformat:2 }}</td> 
     </tr>
     <tr>
         <td>IVA (19%):</td>
-        <td>${{ iva }}</td>
+        <td>${{ iva|floatformat:2 }}</td>
     </tr>
     <tr>
         <td><strong>Total a Pagar:</strong></td>
-        <td><strong>${{ total_con_iva }}</strong></td>
+        <td><strong>${{ total_final }}</strong></td>
     </tr>
 </table>
 

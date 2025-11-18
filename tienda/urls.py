@@ -1,14 +1,14 @@
 from django.urls import path
 from .views import (ProductoListView, ProductoCreateView,ProductoDeleteView, ProductoUpdateView,CategoriaListView, 
                     CategoriaCreateView, CategoriaDeleteView, InventarioListView, 
-                    buscar_inventario, buscar_producto, ver_carrito, agregar_al_carrito, eliminar_item,
-                    incrementar_item, disminuir_item, vaciar_carrito, resumen_pago, pagar, reporte_ventas, home) 
+                     ver_carrito, agregar_al_carrito, eliminar_item,
+                    incrementar_item, disminuir_item, vaciar_carrito, resumen_pago, pagar, home, reporte_ventas_dias, reporte_ventas)  
 
 urlpatterns=[
     path('inicio/', home, name='home'),
     # <---------------urls de producto------------>
     path('productos/', ProductoListView, name='producto-list'),
-    path('inventario/buscar/', buscar_inventario, name='buscar-inventario'),
+    
     path('producto/create/', ProductoCreateView, name='producto-create'),
     path('producto/delete/<int:id>', ProductoDeleteView, name='producto-delete'),
     path('producto/update/<int:id>', ProductoUpdateView, name='producto-update'),
@@ -18,7 +18,7 @@ urlpatterns=[
     path('categoria/delete/<int:id>', CategoriaDeleteView, name='categoria-delete'),
 
     path('inventario/', InventarioListView, name='inventario-list'),
-    path('productos/buscar/', buscar_producto, name='buscar-producto'),
+    
 
     path('carrito/', ver_carrito, name='ver_carrito'),
     path('carrito/agregar/<int:producto_id>/', agregar_al_carrito, name='agregar_al_carrito'),
@@ -30,7 +30,10 @@ urlpatterns=[
 
     path('pago/resumen/', resumen_pago, name='resumen_pago'),
     path('carrito/pagar/', pagar, name='pagar'),
-    path('reporte/ventas/', reporte_ventas, name='reporte_ventas'),
+    
+    path("reportes/", reporte_ventas_dias, name="reporte_dias"),
+    path("reportes/<fecha>/", reporte_ventas, name="reporte_ventas"),
+
 
  
 ]

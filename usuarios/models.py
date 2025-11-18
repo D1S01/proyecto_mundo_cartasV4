@@ -8,7 +8,7 @@ class Rol(models.Model):
         return self.nombre
     
 class Usuario(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='usuarios')
     nombre_completo = models.CharField(max_length=100)
     rut = models.CharField(max_length=12, unique=True)
     telefono = models.CharField(max_length=15, blank=True, null=True) 

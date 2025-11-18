@@ -1,50 +1,44 @@
 {% extends 'tienda/base.html' %}
-
 {% block content %}
-<h1>Reporte de Ventas</h1>
 
+<h2>Ventas del día {{ fecha }}</h2>
 <hr>
 
 {% if ventas %}
-    <table border="1" cellpadding="10" cellspacing="0" style="width: 100%; border-collapse: collapse;">
-        <thead style="background-color: #f2f2f2;">
+    {% for venta in ventas %}
+
+        <h3>Venta #{{ venta.id }}</h3>
+
+        <p><strong>Vendedor:</strong> {{ venta.usuario.usuarios.nombre_completo }}</p>
+        <p><strong>Fecha y Hora:</strong> {{ venta.fecha_venta }}</p>
+
+        <table border="1" cellpadding="5">
             <tr>
-                <th>ID Venta</th>
-                <th>Usuario</th>
                 <th>Producto</th>
                 <th>Cantidad</th>
-                <th>Fecha y Hora</th>
                 <th>Costo Unitario</th>
                 <th>Costo Total</th>
             </tr>
-        </thead>
-        <tbody>
-            {% for venta in ventas %}
-                {% for detalle in venta.detalle_venta_set.all %}
-                    <tr>
-                        <td>{{ venta.id }}</td>
-                        <td>{{ venta.usuario.username }}</td>
-                        <td>{{ detalle.producto.nombre }}</td>
-                        <td>{{ detalle.cantidad }}</td>
-                        <td>{{ venta.fecha_venta}}</td>
-                        <td>${{ detalle.precio_unitario }}</td>
-                        <td><strong>${{ detalle.subtotal }}</strong></td>
-                    </tr>
-                {% endfor %}
+
+            {% for d in venta.detalle_venta_set.all %}
+            <tr>
+                <td>{{ d.producto.nombre }}</td>
+                <td>{{ d.cantidad }}</td>
+                <td>{{ d.precio_unitario }}</td>
+                <td>{{ d.subtotal }}</td>
+            </tr>
             {% endfor %}
-        </tbody>
-    </table>
+        </table>
 
-    <hr>
+        <p><strong>Total Venta:</strong> {{ venta.total }}</p>
 
+        <hr>
+
+    {% endfor %}
 {% else %}
-    <p>No hay ventas registradas aún.</p>
+    <p>No hay ventas este día.</p>
 {% endif %}
 
-<hr>
+<p><a href="{% url 'reporte_dias' %}">Volver</a></p>
 
-<a href="{% url 'producto-list' %}" style="padding: 10px 20px; background-color: #007bff; color: white; text-decoration: none; border-radius: 5px;">
-    Volver
-</a>
-
-{% endblock content %}
+{% endblock %}

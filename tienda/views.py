@@ -4,6 +4,7 @@ from .forms import ProductoForm, CategoriaForm
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.cache import never_cache
 from decimal import Decimal
+from django.db.models import Q
 
 # Create your views here.
 
@@ -13,10 +14,37 @@ def home(request):
 # <---------------vistas de producto------------>
 @login_required
 def ProductoListView(request):
-    return render(request, 'tienda/producto/producto_list.html', {'productos':Producto.objects.all()})
+    query = request.GET.get('q', '').strip()
+    categorias_select = request.GET.getlist('categoria')
+    productos = Producto.objects.all()
+
+    if query:
+        productos = productos.filter(Q(nombre__icontains=query))
+
+    if categorias_select:
+        productos = productos.filter(categoria__id__in=categorias_select).distinct()
+
+    categorias = Categoria.objects.all()
+
+    contexto = {
+        'productos': productos,
+        'categorias': categorias,
+        'query': query,
+        'categorias_seleccionadas': [int(cat_id) for cat_id in categorias_select]
+    }
+    return render(request, 'tienda/producto/producto_list.html', contexto)
 
 def InventarioListView(request):
-    return render(request, 'tienda/inventario/inventario_list.html', {'productos':Producto.objects.all()})
+    query = request.GET.get('q', '').strip()
+    productos = Producto.objects.all()
+    if query:
+        productos = productos.filter(Q(nombre__icontains=query))
+    
+    contexto = {
+        'productos': productos, 
+        'query': query
+    }
+    return render(request, 'tienda/inventario/inventario_list.html', contexto)
 
 def ProductoCreateView(request):
     if request.method == "POST":
@@ -75,36 +103,6 @@ def CategoriaDeleteView(request, id):
         return redirect('categoria-list')
     return render(request, 'tienda/categoria/categoria_delete.html')
 
-@login_required
-def buscar_inventario(request):
-    query = request.GET.get('buscar', '').strip()
-    productos = Producto.objects.filter(nombre__icontains=query) if query else Producto.objects.all()
-    return render(request, 'tienda/inventario/inventario_list.html', {
-        'productos': productos,
-        'query': query
-    })
-
-def buscar_producto(request):
-    query = request.GET.get('buscar', '')
-    categoria_id = request.GET.get('categoria', '')
-    
-    productos = Producto.objects.all()
-    
-    
-    if query:
-        productos = productos.filter(nombre__icontains=query)
-    
-    if categoria_id:
-        productos = productos.filter(categoria__id=categoria_id)
-    
-    categorias = Categoria.objects.all()
-    
-    return render(request, 'tienda/producto/producto_list.html', {
-        'productos': productos,
-        'categorias': categorias,
-        'query': query,
-        'categoria_seleccionada': categoria_id
-    })
 
 @login_required
 def agregar_al_carrito(request, producto_id):
@@ -175,18 +173,18 @@ def resumen_pago(request):
     if not items.exists():
         return redirect('ver_carrito')
 
-    subtotal = venta.total() 
+    total_final = venta.total() 
     
-    iva = Decimal('0.19') * Decimal(subtotal)
-    total_con_iva = subtotal + iva
+    sin_iva = total_final / Decimal('1.19')
+    iva = total_final - sin_iva
    
 
     contexto = {
         'venta': venta,
         'items': items,
-        'subtotal': subtotal,
+        'sin_iva': sin_iva,
         'iva': iva,
-        'total_con_iva': total_con_iva,
+        'total_final': total_final,
     }
     
     return render(request, 'tienda/carrito/resumen.html', contexto)
@@ -210,8 +208,20 @@ def pagar(request):
     
     return render(request, 'tienda/carrito/pago.html')
 
+@login_required
+def reporte_ventas_dias(request):
+    dias = (
+        Venta.objects.filter(estado="pagada")
+        .values_list("fecha_venta__date", flat=True)
+        .distinct()
+        .order_by("-fecha_venta__date")
+    )
+    return render(request, "tienda/reporte/venta_dias.html", {"dias": dias})
 
 @login_required
-def reporte_ventas(request):
-    ventas_pagadas = Venta.objects.filter(estado='pagada')
-    return render(request, 'tienda/reporte/reporte_ventas.html', {'ventas': ventas_pagadas})
+def reporte_ventas(request, fecha):
+    ventas = Venta.objects.filter(
+        estado="pagada",
+        fecha_venta__date=fecha).prefetch_related("detalle_venta_set__producto", "usuario")
+
+    return render(request,"tienda/reporte/reporte_ventas.html",{"ventas": ventas, "fecha": fecha})

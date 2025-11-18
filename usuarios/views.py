@@ -4,19 +4,32 @@ from .models import Usuario
 from .forms import UsuarioForm
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.decorators import user_passes_test
-
+from django.db.models import Q
 
 
 
 
 def administrador_required(user):
-    return user.is_authenticated and user.usuario.rol.nombre == 'Administrador'
+    return user.is_authenticated and user.usuarios.rol.nombre == 'Administrador'
 
 
 @login_required
 @user_passes_test(administrador_required)
 def UsuarioListView(request):
-    return render(request, 'usuarios/usuario_list.html', {'usuarios': Usuario.objects.all()})
+    query = request.GET.get('q', '').strip()
+    usuarios = Usuario.objects.all()
+
+    if query:
+        usuarios = usuarios.filter(
+        Q(user__username__icontains=query) | 
+        Q(nombre_completo__icontains=query)
+        )
+        
+    contexto = {
+        'usuarios': usuarios,
+        'query': query
+    }   
+    return render(request, 'usuarios/usuario_list.html', contexto)
 
 @login_required
 @user_passes_test(administrador_required)
@@ -54,13 +67,3 @@ def UsuarioDeleteView(request, id):
     return render(request, 'usuarios/usuario_delete.html', {'usuario': usuario})
 
 
-@login_required
-@user_passes_test(administrador_required)
-@login_required
-def buscar_usuario(request):
-    query = request.GET.get('buscar', '').strip()
-    usuarios = Usuario.objects.filter(user__username__icontains=query) if query else Usuario.objects.all()
-    return render(request, 'usuarios/usuario_list.html', {
-        'usuarios': usuarios,
-        'query': query
-    })

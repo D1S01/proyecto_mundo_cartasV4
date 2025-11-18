@@ -4,23 +4,36 @@
 
 <h1>Lista de productos</h1>
 
+<form method="get" id="filtro-y-busqueda-form">
+    
+    <div class="d-flex mb-4">
+        <input type="text" 
+               name="q" 
+               value="{{ query }}" 
+               placeholder="Buscar por nombre..."
+               class="form-control me-2">
+        <button type="submit" class="btn btn-primary">
+            <i class="bi bi-search"></i> Buscar
+        </button>
+    </div>
 
-<form method="get" action="{% url 'buscar-producto' %}">
-    <input type="text" name="buscar" value="{{ query }}" placeholder="Buscar por nombre...">
+    {% for c in categorias %}
+    <div class="form-check mb-1">
+        <input class="form-check-input"
+               type="checkbox"
+               name="categoria"
+               id="cat{{ c.id }}"
+               value="{{ c.id }}"
+               {% if c.id in categorias_seleccionadas %}checked{% endif %}
+               
+               onchange="document.getElementById('filtro-y-busqueda-form').submit();">
+        
+        <label class="form-check-label" for="cat{{ c.id }}">
+            {{ c.nombre }}
+        </label>
+    </div>
+    {% endfor %}
     
-   
-    <select name="categoria" onchange="this.form.submit()">
-        <option value="">Todas las categorías</option>
-        {% for categoria in categorias %}
-        <option value="{{ categoria.id }}" 
-                {% if categoria_seleccionada == categoria.id|stringformat:"s" %}selected{% endif %}>
-            {{ categoria.nombre }}
-        </option>
-        {% endfor %}
-    </select>
-    
-    <button type="submit">Buscar</button>
-    <a href="{% url 'buscar-producto' %}">Limpiar</a>
 </form>
 
 <a href="{% url 'ver_carrito' %}">carrito </a>
