@@ -126,3 +126,16 @@ img{
     border-radius: 50%;
     object-fit: cover;
 }
+
+#side-nav ul li{
+    max-width: 72%;
+    text-align: center;
+}
+
+/**Estilos para el inicio**/
+/* bg-cards{
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+    background-color: #d9d9d9;
+} */

@@ -2,10 +2,11 @@ from django.urls import path
 from .views import (ProductoListView, ProductoCreateView,ProductoDeleteView, ProductoUpdateView,CategoriaListView, 
                     CategoriaCreateView, CategoriaDeleteView, CategoriaUpdateView, InventarioListView, 
                      ver_carrito, agregar_al_carrito, eliminar_item,
-                    incrementar_item, disminuir_item, vaciar_carrito, resumen_pago, pagar, home, reporte_ventas_dias, reporte_ventas)  
+                    incrementar_item, disminuir_item, vaciar_carrito, resumen_pago, pagar, home, reporte_ventas_dias, reporte_ventas, StockBajoListView)  
 
 urlpatterns=[
     path('inicio/', home, name='home'),
+    path('inicio/stock_bajo/', StockBajoListView, name='stock_bajo_list'),
     # <---------------urls de producto------------>
     path('productos/', ProductoListView, name='producto-list'),
     

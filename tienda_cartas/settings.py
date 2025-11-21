@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'tienda',
     "usuarios",
     "registration",
+    'widget_tweaks',
     # "crispy_forms",
     # "crispy_bootstrap5",
 ]

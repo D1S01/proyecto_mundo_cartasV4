@@ -1,0 +1,34 @@
+{% extends 'tienda/base.html' %}
+
+{% block content %}
+
+<h2>Stock Bajo</h2>
+<hr>
+
+{% for item in all_stock_bajo %}
+                <p>{{ item.producto.nombre }} - {{ item.stock }}</p>
+{% endfor %}
+
+{% if all_stock_bajo %}
+    <table border="1" cellpadding="5" class="table table-sm table-hover">
+        <thead>
+            <tr>
+                <th>Producto</th>
+                <th>Stock</th>
+            </tr>
+        </thead>
+        <tbody class="table-group-divider">
+            {% for item in all_stock_bajo %}
+            <tr>
+                <td>{{ item.producto.nombre }}</td>
+                <td>{{ item.stock }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+        
+    </table>
+{% else %}
+    <p>No hay productos con stock bajo.</p>
+{% endif %}
+<a href="{% url 'home' %}" class="btn btn-primary">Volver al inicio</a>
+{% endblock content %}

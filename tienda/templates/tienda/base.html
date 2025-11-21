@@ -21,14 +21,16 @@
     
     <main class="d-flex flex-nowrap vh-100">
     {% if request.user.is_authenticated %}
-    <div class="d-flex flex-column flex-shrink-0 h-100 p-3 text-white bg-primary" style="width: 280px;">
-
-        
-        <span class="fs-4">Mi Tienda</span>
-        <img src="{% static 'img/mundocartas.png' %}" class="imagenM" alt="" srcset="">
+    <div id="side-nav" class="d-flex flex-column flex-shrink-0 p-3 text-white bg-primary" style="width: 280px;">
+        {% comment %} <div class="justify-content-center"> {% endcomment %}
+        <div class="d-flex flex-column align-items-center mb-2">
+          <span class="fs-4 text-center">Mi Tienda</span>
+          <img src="{% static 'img/mundocartas.png' %}" class="imagenM" alt="" srcset="">
+          <span class=" fs-4 text-center mt-2">{{ request.user.usuarios.rol.nombre }}</span>
+        </div>
         <hr>
         
-        <ul class="nav nav-pills flex-column mb-auto">
+        <ul class="nav nav-pills flex-column mb-auto align-content-center text-center">
             {% if request.user.is_authenticated %}
                 <li><a class="nav-link text-white" href="{% url "home" %}">Inicio</a></li>
                 {% if user.usuarios.rol.nombre == 'Administrador' %}
@@ -45,7 +47,7 @@
         <hr>
         {% if user.is_authenticated %}
             
-            <a class="nav-link text-white" href="{% url 'logout' %}">Logout ({{ request.user.username }}) </a>
+            <a class="nav-link text-white text-center" href="{% url 'logout' %}">Logout ({{ request.user.username }}) </a>
         {% else %}
             <a class="nav-link text-white" href="{% url 'login' %}">Login</a>
         {% endif %}

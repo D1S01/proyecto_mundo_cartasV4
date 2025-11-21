@@ -1,3 +1,4 @@
+{% load widget_tweaks %}
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -30,7 +31,15 @@
           <h2>Login</h2>
             <form method="post" class="form">
                 {% csrf_token %}
-                {{ form }}
+                {% comment %} {{ form }} {% endcomment %}
+                <div>
+                <label for="{{ form.username.id_for_label }}">Usuario:</label>
+                {% render_field form.username placeholder="Nombre de usuario" class+="form-control" %}
+                </div>
+                <div>
+                <label for="{{ form.password.id_for_label }}">Contraseña:</label>
+                {% render_field form.password placeholder="Contraseña" class+="form-control" %}
+                </div>
                 <button class="btn-green">Ingresar</button>
             </form>
         </div>

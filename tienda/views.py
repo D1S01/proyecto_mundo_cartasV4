@@ -5,12 +5,26 @@ from django.contrib.auth.decorators import login_required
 from django.views.decorators.cache import never_cache
 from decimal import Decimal
 from django.db.models import Q
+import datetime
 
 # Create your views here.
 
 
 def home(request):
-    return render(request, 'tienda/inicio/home.html')
+    productos=Producto.objects.count()
+    ventas=Venta.objects.count()
+    stock_bajo=Inventario.objects.filter(stock__lt=5).count()
+    all_stock_bajo=Inventario.objects.filter(stock__lte=5)
+    # for i in stock_bajo:
+    #     print(i.producto.nombre, i.stock)
+    ventas_hoy=Venta.objects.filter(fecha_venta__date=datetime.date.today()).count()
+    ultimas_5_ventas=Venta.objects.filter(fecha_venta__date=datetime.date.today()).order_by('-fecha_venta')[:5]
+    return render(request, 'tienda/inicio/home.html', {'productos': productos, 'ventas': ventas, 'stock_bajo': stock_bajo, 'all_stock_bajo': all_stock_bajo, 'ventas_hoy': ventas_hoy, 'ultimas_5_ventas': ultimas_5_ventas})
+
+def StockBajoListView(request):
+    all_stock_bajo=Inventario.objects.filter(stock__lte=5)
+    return render(request, 'tienda/inicio/stock_bajo_list.html', {'all_stock_bajo': all_stock_bajo})
+
 # <---------------vistas de producto------------>
 @login_required
 def ProductoListView(request):
