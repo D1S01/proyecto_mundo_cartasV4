@@ -103,6 +103,17 @@ def CategoriaDeleteView(request, id):
         return redirect('categoria-list')
     return render(request, 'tienda/categoria/categoria_delete.html')
 
+def CategoriaUpdateView(request, id):
+    categoria = get_object_or_404(Categoria, pk=id) 
+    if request.method == "POST":
+        form = CategoriaForm(request.POST, request.FILES or None, instance=categoria)
+        if form.is_valid():
+            form.save()
+            return redirect('categoria-list')
+    else:
+        form = CategoriaForm(instance=categoria)
+    return render(request, 'tienda/categoria/categoria_form.html', {'form': form, 'action': 'Modificar'})
+
 
 @login_required
 def agregar_al_carrito(request, producto_id):

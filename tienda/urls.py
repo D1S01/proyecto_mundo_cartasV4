@@ -1,6 +1,6 @@
 from django.urls import path
 from .views import (ProductoListView, ProductoCreateView,ProductoDeleteView, ProductoUpdateView,CategoriaListView, 
-                    CategoriaCreateView, CategoriaDeleteView, InventarioListView, 
+                    CategoriaCreateView, CategoriaDeleteView, CategoriaUpdateView, InventarioListView, 
                      ver_carrito, agregar_al_carrito, eliminar_item,
                     incrementar_item, disminuir_item, vaciar_carrito, resumen_pago, pagar, home, reporte_ventas_dias, reporte_ventas)  
 
@@ -16,6 +16,7 @@ urlpatterns=[
     path('categoria/', CategoriaListView, name='categoria-list'),
     path('categoria/create/', CategoriaCreateView, name='categoria-create'),
     path('categoria/delete/<int:id>', CategoriaDeleteView, name='categoria-delete'),
+    path('categoria/update/<int:id>', CategoriaUpdateView, name='categoria-update'),
 
     path('inventario/', InventarioListView, name='inventario-list'),
     
