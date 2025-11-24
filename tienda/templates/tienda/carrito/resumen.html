@@ -2,71 +2,86 @@
 
 {% block content %}
 
-<h1>Resumen de Compra</h1>
-
-<hr>
-
-<h3>Detalle del Pedido</h3>
-<table border="1" cellpadding="8" cellspacing="0">
-    <thead>
-        <tr>
-            <th>Producto</th>
-            <th>Cantidad</th>
-            <th>Precio Unitario</th>
-            <th>Subtotal</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for item in items %}
-        <tr>
-            <td>{{ item.producto.nombre }}</td>
-            <td>{{ item.cantidad }}</td>
-            <td>${{ item.precio_unitario }}</td> 
-            <td>${{ item.subtotal }}</td> 
-        </tr>
-        {% endfor %}
-    </tbody>
-</table>
-
-<hr>
-
-<h3>Totales</h3>
-<table border="1" cellpadding="8" cellspacing="0">
-    <tr>
-        <td>Subtotal:</td>
-        <td>${{ sin_iva|floatformat:2 }}</td> 
-    </tr>
-    <tr>
-        <td>IVA (19%):</td>
-        <td>${{ iva|floatformat:2 }}</td>
-    </tr>
-    <tr>
-        <td><strong>Total a Pagar:</strong></td>
-        <td><strong>${{ total_final }}</strong></td>
-    </tr>
-</table>
-
-<hr>
-
-<h3>Forma de Pago</h3>
-<form action="{% url 'pagar' %}" method="post">
-    {% csrf_token %}
+<div class="container mt-4">
+    <h1>Resumen de Compra</h1>
+    <div class="row">
+        <div class="col-md-8">
+            <div class="card">
+                <h3>Detalle del pedido</h3>
+            </div>
+            <div class="card-budy">
+                <div class="table responsive">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Producto</th>
+                                <th>Cantidad</th>
+                                <th>Precio Unitario</th>
+                                <th>Subtotal</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for item in items %}
+                            <tr>
+                                <td>{{ item.producto.nombre }}</td>
+                                <td>{{ item.cantidad }}</td>
+                                <td>${{ item.precio_unitario }}</td>
+                                <td>${{ item.subtotal }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card">
+                <h3>Totales</h3>
+            </div>
+            <div class="card-body">
+                <table class="table">
+                    <tr>
+                        <td>Subtotal:</td>
+                        <td class="text-end">${{sin_iva|floatformat:2}}</td>
+                    </tr>
+                    <tr>
+                        <td>IVA(19%%)</td>
+                        <td class="text-end">${{iva|floatformat:2}}</td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <strong>Total a Pagar</strong>
+                        </td>
+                        <td class="text-end">
+                            <strong>${{total_final}}</strong>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            
+            <div class="card">
+                <h3>Forma de Pago</h3>
+                <div class="card-body">
+                    <form action="{% url "pagar" %}" method="post">
+                        {% csrf_token %}
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="metodo_pago" value="efectivo" required>
+                            <label>Efectivo</label>
+                        </div>
+                         <div class="form-check">
+                            <input class="form-check-input" type="radio" name="metodo_pago" value="tarjeta" required>
+                            <label>Tarjeta</label>
+                        </div>
+                        <div>
+                            <button type="submit" class="btn btn-success">Confirmar</button>
+                            <a href="{% url 'ver_carrito' %}" class="btn btn-secondary">Cancelar y Volver</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
     
-    <label>
-        <input type="radio" name="metodo_pago" value="efectivo" required> 
-        Efectivo
-    </label>
-    <br>
-    <label>
-        <input type="radio" name="metodo_pago" value="tarjeta"> 
-        Tarjeta
-    </label>
-    <br><br>
-    
-    <button type="submit">Confirmar y Pagar</button>
-</form>
-
-<br>
-<a href="{% url 'ver_carrito' %}">Cancelar y Volver al Carrito</a>
+</div>
 
 {% endblock %}

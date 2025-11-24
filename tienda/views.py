@@ -132,6 +132,8 @@ def CategoriaUpdateView(request, id):
 @login_required
 def agregar_al_carrito(request, producto_id):
     producto = get_object_or_404(Producto, id=producto_id)
+    if producto.inventario.stock == 0: 
+        return redirect("producto-list")
     venta, _ = Venta.objects.get_or_create(usuario=request.user, estado='pendiente', defaults={'estado': 'pendiente'})
     item, creado = Detalle_venta.objects.get_or_create(
         venta=venta,
@@ -160,6 +162,8 @@ def ver_carrito(request):
 @login_required
 def incrementar_item(request, item_id):
     item = get_object_or_404(Detalle_venta, id=item_id)
+    if item.cantidad + 1 > item.producto.inventario.stock:
+        return redirect("ver_carrito")
     item.cantidad += 1
     item.save()
     return redirect('ver_carrito')

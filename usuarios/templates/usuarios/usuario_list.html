@@ -4,7 +4,7 @@
 <div class="container mt-4">
     
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h1 class="display-6 text-black">Lista de Usuarios</h1>
+        <h1>Lista de Usuarios</h1>
         <div>
             <a href="{% url 'usuario-create' %}" class="btn btn-success">
                 <i class="bi bi-person-plus-fill"></i> Crear Usuario
@@ -24,20 +24,20 @@
         </div>
     </div>
 
-    <div class="card shadow-sm border-0">
+    <div class="card">
         <div class="card-body p-0">
             <div class="table-responsive">
-                <table class="table table-hover align-middle mb-0">
+                <table class="table mb-0">
                     <thead class="table-primary">
                         <tr>
-                            <th scope="col" class="ps-4">Nombre Completo</th>
-                            <th scope="col">RUT</th>
-                            <th scope="col">Teléfono</th>
-                            <th scope="col">Rol</th>
-                            <th scope="col" class="text-center">Acciones</th>
+                            <th>Nombre Completo</th>
+                            <th>RUT</th>
+                            <th>Teléfono</th>
+                            <th>Rol</th>
+                            <th class="text-center">Acciones</th>
                         </tr>
                     </thead>
-                    <tbody class="bg-white">
+                    <tbody>
                         {% for i in usuarios %}
                         <tr>
                             <td class="fw-bold text-black">
@@ -55,11 +55,11 @@
                             </td>
 
                             <td class="text-center">
-                                <div class="btn-group" role="group">
-                                    <a href="{% url 'usuario-update' i.id %}" class="btn btn-sm btn-primary text-white" title="Editar">
+                                <div class="btn-group">
+                                    <a href="{% url 'usuario-update' i.id %}" class="btn btn-sm btn-primary">
                                         <i class="bi bi-pencil-fill"></i>
                                     </a>
-                                    <a href="{% url 'usuario-delete' i.id %}" class="btn btn-sm btn-danger text-white ms-1" title="Eliminar">
+                                    <a href="{% url 'usuario-delete' i.id %}" class="btn btn-sm btn-danger ms-1">
                                         <i class="bi bi-trash-fill"></i>
                                     </a>
                                 </div>
@@ -67,7 +67,7 @@
                         </tr>
                         {% empty %}
                         <tr>
-                            <td colspan="5" class="text-center py-5 text-muted">
+                            <td class="text-center">
                                 No se encontraron usuarios registrados.
                             </td>
                         </tr>

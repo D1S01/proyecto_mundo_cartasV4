@@ -2,7 +2,7 @@ from django import forms
 from .models import Producto, Categoria
 
 class ProductoForm(forms.ModelForm):
-    stock = forms.IntegerField(label='Stock', min_value=0, initial=0, 
+    stock = forms.IntegerField(label='Stock', min_value=0, 
         widget=forms.NumberInput(attrs={'class': 'form-control'}))
 
     class Meta:

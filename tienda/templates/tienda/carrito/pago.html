@@ -1,6 +1,12 @@
 {% extends 'tienda/base.html' %}
 
 {% block content  %}
-<h2>el pago fue hecho</h2>
-<a href="{% url "producto-list" %}">volver</a>
+<div class="container text-center">
+    <div class="alert">
+        <h2>El pago fue realizado con exito</h2>
+    </div>
+    <a href="{% url "producto-list" %}" class="btn btn-primary">volver</a>
+    
+</div>
+
 {% endblock content %}

@@ -2,46 +2,73 @@
 
 {% block content %}
 
-<h1>carrito</h1>
+<div class="container mt-4">
+    <h1 class="">Carrito</h1>
 
-{% if items %}
-<table border="1" cellpadding="8" cellspacing="0">
-    <thead>
-        <tr>
-            <th>Producto</th>
-            <th>Cantidad</th>
-            <th>Precio Unitario</th>
-            <th>Subtotal</th>
-            <th>Acciones</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for item in items %}
-        <tr>
-            <td>{{ item.producto.nombre }}</td>
-            <td>{{ item.cantidad }}</td>
-            <td>${{ item.precio_unitario }}</td>
+    {% if items %}
+    <div class="card shadow-ms">
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>Producto</th>
+                            <th>Cantidad</th>
+                            <th>Precio Unitario</th>
+                            <th>Subtotal</th>
+                            <th class="text-center">Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for item in items %}
+                        <tr>
+                            <td>{{ item.producto.nombre }}</td>
+                            <td>{{ item.cantidad }}</td>
+                            <td>${{ item.precio_unitario }}</td>
+                            <td>${{ item.subtotal }}</td>
+                            <td class="text-center">
+                                <div class="btn-group">
+                                    <a href="{% url 'incrementar_item' item.id %}" class="btn btn-sm btn-success"
+                                        title="Aumentar">
+                                        <i class="bi bi-plus-lg"></i>
+                                    </a>
+                                    <a href="{% url 'disminuir_item' item.id %}" class="btn btn-sm btn-warning"
+                                        title="Disminuir">
+                                        <i class="bi bi-dash-lg"></i>
+                                    </a>
+                                    <a href="{% url 'eliminar_item' item.id %}" class="btn btn-sm btn-danger"
+                                        title="Eliminar">
+                                        <i class="bi bi-trash"></i>
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="mt-4">
+        <div>
+            <a href="{% url 'vaciar_carrito' %}" class="btn btn-danger">
+                <i class="bi bi-trash3"></i> Vaciar
+            </a>
+            <a href="{% url 'producto-list' %}" class="btn btn-primary">volver</a>
+        </div>
+        <div class="text-end">
+            <h3>Total: ${{ total }}</h3>
+            <a href="{% url 'resumen_pago' %}" class="btn btn-primary">
+                Cobrar <i class="bi bi-arrow-right"></i>
+            </a>
+        </div>
+    </div>
+    {% else %}
+    <div class="text-center">
+        <h2>No hay productos</h2>
+        <a href="{% url 'producto-list' %}" class="btn btn-primary">volver</a>
+    </div>
 
-            <td>${{ item.subtotal }}</td>
-            <td>
-                <a href="{% url 'incrementar_item' item.id %}">+</a>
-                <a href="{% url 'disminuir_item' item.id %}">-</a>
-                <a href="{% url 'eliminar_item' item.id %}">🗑️</a>
-            </td>
-        </tr>
-        {% endfor %}
-    </tbody>
-</table>
-
-<h3>Total: ${{ total }}</h3>
-
-<a href="{% url 'vaciar_carrito' %}">Vaciar carrito</a>
-
-{% else %}
-<p>el carrito está vacío</p>
-{% endif %}
-<a href="{% url 'resumen_pago' %}">
-    <button type="button">Ir a Pagar</button>
-</a>
-
+    {% endif %}
+</div>
 {% endblock %}

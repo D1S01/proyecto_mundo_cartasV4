@@ -5,8 +5,9 @@ from django.contrib.auth.models import User
 
 class UsuarioForm(forms.ModelForm):
     username = forms.CharField(max_length=150, label='Nombre de usuario', 
-        widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Nombre de usuario'}))
-    password = forms.CharField(widget=forms.PasswordInput(attrs={'class': 'form-control', 'placeholder': '********'}), label='Contraseña', required=False,
+        widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Nombre de usuario', 'autocomplete': 'off'}))
+    password = forms.CharField(widget=forms.PasswordInput(attrs={'class': 'form-control', 'placeholder': '******', 'autocomplete': 'new-password'}), 
+                label='Contraseña', required=False,
         )
 
     class Meta:
