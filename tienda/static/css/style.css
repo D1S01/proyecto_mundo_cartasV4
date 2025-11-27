@@ -1,125 +1,4 @@
 
-/**Globales**/
-.contenedor{
-    max-width: 900px;
-    margin: 0 auto;
-    height: 100%;
-}
-
-
-img{
-    /**Le doy un tamaño maximo de 100% del contenedor a la imagen**/
-    max-width: 100%;
-}
-
-
-/**Utilidades**/
-.seccion{
-    margin-top: 20px;
-    margin-bottom: 20px;
-}
-
-.fw-400{
-    font-weight: 400;
-}
-
-.centrar-texto{
-    text-align: center;
-}
-
-
-.iconos-caracteristicas{
-    list-style: none;
-    display: flex;
-    justify-content: start;
-    align-items: center;
-    padding: 0;
-}
-
-.iconos-caracteristicas li{
-    flex-basis: calc(15% - 1rem);
-    margin-right: 1rem;
-}
-
-
-
-/**seccion inferior**/
-.seccion-inferior{
-    display: flex;
-    justify-content: space-between;
-}
-
-.seccion-inferior .populares{
-    flex-basis: 60%;
-}
-
-.seccion-inferior .comentarios{
-    flex-basis: calc(40% - 2rem);
-}
-
-.entradas{
-    display: flex;
-    justify-content: space-between;
-    margin-bottom: 2rem;
-}
-
-.entrada-img{
-    flex-basis: 50%;
-}
-
-
-.caja {
-    display: flex;
-    flex-flow: column wrap;
-    justify-content: center;
-    align-items: center;
-}
-
-.box {
-    height: 600px;
-    overflow: hidden;
-}
-
-
-.box img {
-    min-width: 400px;
-    max-width: 400px;
-    height: auto;
-}
-
-.entrada-texto{
-    margin: 4rem 4rem 0 0;
-    flex-basis: calc(50% - 3rem);
-}
-
-.entrada-texto h3{
-    margin: 0;
-    line-height: 1.4;
-}
-
-
-
-/**Mangas**/
-.mangas{
-    display: flex;
-    justify-content: space-between;
-    padding: 20px 0;
-}
-
-.manga-imagen{
-    flex-basis: 60%;
-}
-
-.manga-contenido{
-    flex-basis: calc(40% - 20px);    
-}
-
-.manga-contenido p, .manga-contenido blockquote{
-    font-size: 20px;
-    margin-bottom: 20px;
-}
-
-
 .imagenM {
     width: 120px;
     height: 120px;
@@ -139,3 +18,26 @@ img{
     margin-top: 20px;
     background-color: #d9d9d9;
 } */
+
+/* 1. Estilo base (PC): Se comporta como una columna flex normal */
+.sidebar-manual {
+    width: 280px;
+    transition: left 0.3s ease; /* Animación suave al entrar/salir */
+}
+
+/* 2. Estilo para Móvil (Pantallas menores a 768px) */
+@media (max-width: 768px) {
+    .sidebar-manual {
+        position: fixed; /* Se fija encima del contenido */
+        top: 0;
+        left: -280px;    /* ESCONDIDO: Lo movemos fuera de la pantalla a la izquierda */
+        height: 100vh;   /* Altura completa */
+        z-index: 1000;   /* Asegura que flote sobre todo lo demás */
+    }
+
+    /* 3. Clase activa: Cuando agreguemos esta clase con JS, el menú aparece */
+    .sidebar-manual.activo {
+        left: 0;         /* VISIBLE: Lo devolvemos a su sitio */
+        box-shadow: 2px 0 5px rgba(0,0,0,0.5); /* Sombra para que se vea bonito encima */
+    }
+}

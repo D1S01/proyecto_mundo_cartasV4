@@ -1,7 +1,7 @@
 {% extends 'tienda/base.html' %}
 
 {% block content %}
-<div class="container mt-4">
+<div class="container mt-1">
     
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h1>Lista de Productos</h1>
@@ -39,57 +39,61 @@
                             <th class="text-center">Acciones</th>
                         </tr>
                     </thead>
-                    <tbody>
-                        {% for i in productos %}
-                        <tr>
-                            <td class="fw-bold text-black">
-                                {{ i.nombre }}
-                            </td>
-
-                            <td>
-                                {% for c in i.categoria.all %}
-                                    <span class="fw-bold text-black me-1">
-                                        {{ c.nombre }}
-                                    </span>
-                                {% empty %}
-                                    <span>Sin categoría</span>
-                                {% endfor %}
-                            </td>
-
-                            <td class="text-black">${{ i.precio }}CLP</td>
-
-                            <td>
-                                {% if i.inventario %}
-                                    {% if i.inventario.stock > 5 %}
-                                        <span class="badge bg-success">{{ i.inventario.stock }}</span>
-                                    {% else %}
-                                        <span class="badge bg-danger">{{ i.inventario.stock }}</span>
-                                    {% endif %}
-                                {% else %}
-                                    <span>N/A</span>
-                                {% endif %}
-                            </td>
-
-                            <td class="text-center">
-                                <div class="btn-group">
-                                    <a href="{% url 'producto-update' i.id %}" class="btn btn-sm btn-primary">
-                                        <i class="bi bi-pencil-fill"></i> 
-                                    </a>
-                                    <a href="{% url 'producto-delete' i.id %}" class="btn btn-sm btn-danger ms-1">
-                                        <i class="bi bi-trash-fill"></i> 
-                                    </a>
-                                </div>
-                            </td>
-                        </tr>
-                        {% empty %}
-                        <tr>
-                            <td class="text-center">
-                                No se encontraron productos.
-                            </td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
                 </table>
+                <div style="max-height: 50vh; overflow-y: scroll;">
+                    <table class="table mb-0">
+                        <tbody>
+                            {% for i in productos %}
+                            <tr>
+                                <td class="fw-bold text-black">
+                                    {{ i.nombre }}
+                                </td>
+
+                                <td>
+                                    {% for c in i.categoria.all %}
+                                        <span class="fw-bold text-black me-1">
+                                            {{ c.nombre }}
+                                        </span>
+                                    {% empty %}
+                                        <span>Sin categoría</span>
+                                    {% endfor %}
+                                </td>
+
+                                <td class="text-black">${{ i.precio }}CLP</td>
+
+                                <td>
+                                    {% if i.inventario %}
+                                        {% if i.inventario.stock > 5 %}
+                                            <span class="badge bg-success">{{ i.inventario.stock }}</span>
+                                        {% else %}
+                                            <span class="badge bg-danger">{{ i.inventario.stock }}</span>
+                                        {% endif %}
+                                    {% else %}
+                                        <span>N/A</span>
+                                    {% endif %}
+                                </td>
+
+                                <td class="text-center">
+                                    <div class="btn-group">
+                                        <a href="{% url 'producto-update' i.id %}" class="btn btn-sm btn-primary">
+                                            <i class="bi bi-pencil-fill"></i> 
+                                        </a>
+                                        <a href="{% url 'producto-delete' i.id %}" class="btn btn-sm btn-danger ms-1">
+                                            <i class="bi bi-trash-fill"></i> 
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td class="text-center">
+                                    No se encontraron productos.
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
     </div>

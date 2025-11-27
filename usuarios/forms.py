@@ -28,6 +28,8 @@ class UsuarioForm(forms.ModelForm):
                 self.add_error("rut", "El RUT debe llevar guion. Ejemplo: 12345678-9")
             if len(rut_limpio) > 9:
                 self.add_error("rut", "El RUT es demasiado largo.")
+            if len(rut_limpio) < 9:
+                self.add_error("rut", "El RUT es demasiado corto.")
         return rut 
 
     def clean_telefono(self):

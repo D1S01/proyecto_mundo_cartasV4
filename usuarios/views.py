@@ -6,7 +6,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.decorators import user_passes_test
 from django.db.models import Q
 from django.contrib.auth.models import User 
-
+from django.contrib import messages
 
 
 
@@ -45,6 +45,7 @@ def UsuarioCreateView(request):
             usuario = form.save(commit=False)
             usuario.user = user
             usuario.save()
+            messages.success(request, "Usuario creado exitosamente")
             return redirect('usuario-list')
     else:
         form = UsuarioForm()
@@ -63,6 +64,7 @@ def UsuarioUpdateView(request, id):
                 user.set_password(form.cleaned_data['password'])
             user.save()
             form.save()
+            messages.success(request, "Usuario modificado exitosamente")
             return redirect('usuario-list')
     else:
         form = UsuarioForm(instance=usuario, initial={'username': usuario.user.username})
@@ -74,6 +76,7 @@ def UsuarioDeleteView(request, id):
     usuario = get_object_or_404(Usuario, pk=id)
     if request.method == "POST":
         usuario.user.delete()
+        messages.success(request, "Usuario eliminado exitosamente")
         return redirect('usuario-list')
     return render(request, 'usuarios/usuario_delete.html', {'usuario': usuario})
 

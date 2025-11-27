@@ -6,7 +6,7 @@ from django.views.decorators.cache import never_cache
 from decimal import Decimal
 from django.db.models import Q
 import datetime
-
+from django.contrib import messages
 # Create your views here.
 
 
@@ -67,6 +67,7 @@ def ProductoCreateView(request):
             producto = form.save()
             stock = request.POST.get('stock')
             Inventario.objects.create(producto=producto, stock=stock)
+            messages.success(request, "Producto creado exitosamente")
             return redirect('inventario-list')
     else:
         form = ProductoForm()
@@ -77,6 +78,7 @@ def ProductoDeleteView(request, id):
     producto=get_object_or_404(Producto, pk=id)
     if request.method=="POST":
         producto.delete()
+        messages.success(request, "Producto eliminado exitosamente")
         return redirect('inventario-list')
     return render(request, 'tienda/producto/producto_delete.html')
 
@@ -89,6 +91,7 @@ def ProductoUpdateView(request, id):
             producto = form.save()
             stock = request.POST.get('stock')
             Inventario.objects.update_or_create(producto=producto, defaults={'stock': stock})
+            messages.success(request, "Producto modificado exitosamente")
             return redirect('inventario-list')
     else:
         form = ProductoForm(instance=producto, initial={'stock': producto.inventario.stock})
@@ -104,6 +107,7 @@ def CategoriaCreateView(request):
         form=CategoriaForm(request.POST or None, request.FILES or None)
         if form.is_valid():
             form.save()
+            messages.success(request, "Categoria creada exitosamente")
             return redirect('categoria-list')
     else:
         form=CategoriaForm()
@@ -114,6 +118,7 @@ def CategoriaDeleteView(request, id):
     categoria=get_object_or_404(Categoria, pk=id)
     if request.method=="POST":
         categoria.delete()
+        messages.success(request, "Categoria eliminada exitosamente")
         return redirect('categoria-list')
     return render(request, 'tienda/categoria/categoria_delete.html')
 
@@ -123,6 +128,7 @@ def CategoriaUpdateView(request, id):
         form = CategoriaForm(request.POST, request.FILES or None, instance=categoria)
         if form.is_valid():
             form.save()
+            messages.success(request, "Categoria modificada exitosamente")
             return redirect('categoria-list')
     else:
         form = CategoriaForm(instance=categoria)
@@ -133,6 +139,7 @@ def CategoriaUpdateView(request, id):
 def agregar_al_carrito(request, producto_id):
     producto = get_object_or_404(Producto, id=producto_id)
     if producto.inventario.stock == 0: 
+        messages.error(request, "No hay stock disponible para este producto")
         return redirect("producto-list")
     venta, _ = Venta.objects.get_or_create(usuario=request.user, estado='pendiente', defaults={'estado': 'pendiente'})
     item, creado = Detalle_venta.objects.get_or_create(
@@ -144,7 +151,7 @@ def agregar_al_carrito(request, producto_id):
         item.cantidad += 1
         item.precio_unitario = producto.precio 
         item.save()
-
+    messages.success(request, "Producto agregado al carrito.")
     return redirect('producto-list')
 
 def ver_carrito(request):
@@ -163,6 +170,7 @@ def ver_carrito(request):
 def incrementar_item(request, item_id):
     item = get_object_or_404(Detalle_venta, id=item_id)
     if item.cantidad + 1 > item.producto.inventario.stock:
+        messages.error(request, "No hay suficiente stock disponible para este producto")
         return redirect("ver_carrito")
     item.cantidad += 1
     item.save()
@@ -184,6 +192,7 @@ def disminuir_item(request, item_id):
 def eliminar_item(request, item_id):
     item = get_object_or_404(Detalle_venta, id=item_id)
     item.delete()
+    messages.success(request, "Item eliminado del carrito.")
     return redirect('ver_carrito')
 
 
@@ -191,6 +200,7 @@ def eliminar_item(request, item_id):
 def vaciar_carrito(request):
     venta, _ = Venta.objects.get_or_create(usuario=request.user, estado='pendiente', defaults={'estado': 'pendiente'})
     venta.detalle_venta_set.all().delete()
+    messages.success(request, "Se ha vaciado el carrito")
     return redirect('ver_carrito')
 
 

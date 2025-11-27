@@ -19,9 +19,9 @@
   </head>
   <body>
     
-    <main class="d-flex flex-nowrap vh-100">
+    <main class="d-flex vh-100">
     {% if request.user.is_authenticated %}
-    <div id="side-nav" class="d-flex flex-column flex-shrink-0 p-3 text-white bg-primary" style="width: 280px;">
+    <div class="d-flex flex-column p-3 text-white bg-primary" style="width: 280px;">
         {% comment %} <div class="justify-content-center"> {% endcomment %}
         <div class="d-flex flex-column align-items-center mb-2">
           <span class="fs-4 text-center">Mi Tienda</span>
@@ -30,7 +30,7 @@
         </div>
         <hr>
         
-        <ul class="nav nav-pills flex-column mb-auto align-content-center text-center">
+        <ul class="nav flex-column mb-auto text-center">
             {% if request.user.is_authenticated %}
                 <li><a class="nav-link text-white" href="{% url "home" %}">Inicio</a></li>
                 {% if user.usuarios.rol.nombre == 'Administrador' %}
@@ -67,10 +67,10 @@
     <!-- Bootstrap -->
     {% comment %} <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js" integrity="sha384-ndDqU0Gzau9qJ1lfW4pNLlhNTkCfHzAVBReH9diLvGRem5+R9g2FzA8ZGN954O5Q" crossorigin="anonymous"></script> {% endcomment %}
     <!-- Notyf -->
-    {% comment %} <script src="https://cdn.jsdelivr.net/npm/notyf@3/notyf.min.js"></script> {% endcomment %}
+    <script src="https://cdn.jsdelivr.net/npm/notyf@3/notyf.min.js"></script>
     <!-- Vanilla DataTables -->
     {% comment %} <script src="https://unpkg.com/vanilla-datatables@latest/dist/vanilla-dataTables.min.js" type="text/javascript"></script> {% endcomment %}
-    {% comment %} <script>      
+    <script>      
       {% if messages %}
       const notyf = new Notyf({
         duration: 3000,
@@ -89,6 +89,11 @@
         {% endif %}
       {% endfor %}
     {% endif %}
-    </script> {% endcomment %}
+    </script> 
+    <style>
+      .notyf {
+        margin-left: 9rem;
+      }
+    </style>
   </body>
 </html>
