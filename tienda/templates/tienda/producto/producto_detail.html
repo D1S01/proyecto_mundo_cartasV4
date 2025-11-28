@@ -1,0 +1,47 @@
+{% extends 'tienda/base.html' %}
+
+{% block content %}
+
+<h2>Detalles de producto</h2>
+
+<div class="card m-2" style="width: 18rem">
+    {% if producto.imagen %}
+        <img src="{{ producto.imagen.url }}" class="card-img-top" alt="..." />
+    {% endif %}
+    <div class="card-body">
+        <h5 class="card-title">{{ producto.nombre }}</h5>
+        <p class="card-text">
+            Categoria:<ul>
+            {% for c in producto.categoria.all %}
+                <li>{{ c.nombre }}</li>
+            {% empty %}
+                <li>n/a</li>
+            {% endfor %}
+            </ul>
+        </p>
+        <p class="card-text">Precio: ${{ producto.precio }}</p>
+        <p class="card-text">
+        stock:
+            <ul>
+                {% if producto.inventario %}
+            {{ producto.inventario.stock }}
+        {% else %}
+            0
+        {% endif %}
+            </ul>
+        </p>
+        <form action="{% url 'agregar_al_carrito' producto.id %}" method="post">
+            {% csrf_token %}
+            <button type="submit"><i class="bi bi-plus-circle"></button>
+        </form>
+        <a href="{% url 'producto-list' %}" class="btn btn-primary">Volver</a>
+        {% comment %} <p class="card-text">Publicacion: {{ book.anio_publicacion }}</p> {% endcomment %}
+        {% comment %}
+        <a href="{% url 'producto-update' producto.id %}" class="btn btn-warning">Editar</a>
+        <a href="{% url 'producto-delete' producto.id %}" class="btn btn-danger">Eliminar</a>
+        {% endcomment %}
+        
+    </div>
+</div>  
+
+{% endblock content %}

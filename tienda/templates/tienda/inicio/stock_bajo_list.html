@@ -4,11 +4,6 @@
 
 <h2>Stock Bajo</h2>
 <hr>
-
-{% for item in all_stock_bajo %}
-                <p>{{ item.producto.nombre }} - {{ item.stock }}</p>
-{% endfor %}
-
 {% if all_stock_bajo %}
     <table border="1" cellpadding="5" class="table table-sm table-hover">
         <thead>

@@ -7,8 +7,11 @@ from decimal import Decimal
 from django.db.models import Q
 import datetime
 from django.contrib import messages
+from django.contrib.auth.decorators import user_passes_test
 # Create your views here.
 
+def administrador_required(user):
+    return user.is_authenticated and user.usuarios.rol.nombre == 'Administrador'
 
 def home(request):
     productos=Producto.objects.count()
@@ -48,6 +51,12 @@ def ProductoListView(request):
     }
     return render(request, 'tienda/producto/producto_list.html', contexto)
 
+def ProductoDetailView(request, id):
+    producto = get_object_or_404(Producto, pk=id)
+    return render(request, 'tienda/producto/producto_detail.html', {'producto': producto})
+
+@login_required
+@user_passes_test(administrador_required)
 def InventarioListView(request):
     query = request.GET.get('q', '').strip()
     productos = Producto.objects.all()
@@ -60,6 +69,8 @@ def InventarioListView(request):
     }
     return render(request, 'tienda/inventario/inventario_list.html', contexto)
 
+@login_required
+@user_passes_test(administrador_required)
 def ProductoCreateView(request):
     if request.method == "POST":
         form = ProductoForm(request.POST, request.FILES or None)
@@ -74,6 +85,7 @@ def ProductoCreateView(request):
     return render(request, 'tienda/producto/producto_form.html', {'form': form, 'action': 'Crear'})
 
 @login_required
+@user_passes_test(administrador_required)
 def ProductoDeleteView(request, id):
     producto=get_object_or_404(Producto, pk=id)
     if request.method=="POST":
@@ -83,6 +95,7 @@ def ProductoDeleteView(request, id):
     return render(request, 'tienda/producto/producto_delete.html')
 
 @login_required
+@user_passes_test(administrador_required)
 def ProductoUpdateView(request, id):
     producto = get_object_or_404(Producto, pk=id) 
     if request.method == "POST":
@@ -97,11 +110,14 @@ def ProductoUpdateView(request, id):
         form = ProductoForm(instance=producto, initial={'stock': producto.inventario.stock})
     return render(request, 'tienda/producto/producto_form.html', {'form': form, 'action': 'Modificar'})
 # <---------------vistas de categoria------------>
+
 @login_required
+@user_passes_test(administrador_required)
 def CategoriaListView(request):
     return render(request, 'tienda/categoria/categoria_list.html', {'categorias':Categoria.objects.all()})
 
 @login_required
+@user_passes_test(administrador_required)
 def CategoriaCreateView(request):
     if request.method=="POST":
         form=CategoriaForm(request.POST or None, request.FILES or None)
@@ -114,6 +130,7 @@ def CategoriaCreateView(request):
     return render(request, 'tienda/categoria/categoria_form.html', {'form':form, 'action':'Crear'})
 
 @login_required
+@user_passes_test(administrador_required)
 def CategoriaDeleteView(request, id):
     categoria=get_object_or_404(Categoria, pk=id)
     if request.method=="POST":
@@ -122,6 +139,9 @@ def CategoriaDeleteView(request, id):
         return redirect('categoria-list')
     return render(request, 'tienda/categoria/categoria_delete.html')
 
+
+@login_required
+@user_passes_test(administrador_required)
 def CategoriaUpdateView(request, id):
     categoria = get_object_or_404(Categoria, pk=id) 
     if request.method == "POST":
@@ -247,7 +267,9 @@ def pagar(request):
     
     return render(request, 'tienda/carrito/pago.html')
 
+
 @login_required
+@user_passes_test(administrador_required)
 def reporte_ventas_dias(request):
     dias = (
         Venta.objects.filter(estado="pagada")
@@ -258,6 +280,7 @@ def reporte_ventas_dias(request):
     return render(request, "tienda/reporte/venta_dias.html", {"dias": dias})
 
 @login_required
+@user_passes_test(administrador_required)
 def reporte_ventas(request, fecha):
     ventas = Venta.objects.filter(
         estado="pagada",
