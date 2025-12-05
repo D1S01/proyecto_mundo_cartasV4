@@ -1,7 +1,7 @@
 from django.urls import path
 from .views import (ProductoListView, ProductoCreateView, ProductoDetailView, ProductoDeleteView, ProductoUpdateView,CategoriaListView, 
-                    CategoriaCreateView, CategoriaDeleteView, CategoriaUpdateView, InventarioListView, 
-                     ver_carrito, agregar_al_carrito, eliminar_item,
+                    CategoriaCreateView, CategoriaDeleteView, CategoriaUpdateView, InventarioListView, InventarioUpdateView, 
+                      agregar_al_carrito, eliminar_item,
                     incrementar_item, disminuir_item, vaciar_carrito, resumen_pago, pagar, home, reporte_ventas_dias, reporte_ventas, StockBajoListView)  
 
 urlpatterns=[
@@ -22,9 +22,9 @@ urlpatterns=[
     path('categoria/update/<int:id>', CategoriaUpdateView, name='categoria-update'),
 
     path('inventario/', InventarioListView, name='inventario-list'),
+    path('inventario/update/<int:id>', InventarioUpdateView, name='inventario-update'),
     
 
-    path('carrito/', ver_carrito, name='ver_carrito'),
     path('carrito/agregar/<int:producto_id>/', agregar_al_carrito, name='agregar_al_carrito'),
     path('carrito/eliminar/<int:item_id>/', eliminar_item, name='eliminar_item'),
     path('carrito/incrementar/<int:item_id>/', incrementar_item, name='incrementar_item'),

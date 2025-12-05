@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from .models import Producto, Categoria, Inventario, Venta, Detalle_venta
-from .forms import ProductoForm, CategoriaForm
+from .forms import ProductoForm, CategoriaForm, ProductoUpdateForm, InventarioForm
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.cache import never_cache
 from decimal import Decimal
@@ -16,8 +16,8 @@ def administrador_required(user):
 def home(request):
     productos=Producto.objects.count()
     ventas=Venta.objects.count()
-    stock_bajo=Inventario.objects.filter(stock__lt=5).count()
-    all_stock_bajo=Inventario.objects.filter(stock__lte=5)
+    all_stock_bajo = Inventario.objects.filter(stock_critico=True, stock__lte=5)
+    stock_bajo = all_stock_bajo.count()
     # for i in stock_bajo:
     #     print(i.producto.nombre, i.stock)
     ventas_hoy=Venta.objects.filter(fecha_venta__date=datetime.date.today()).count()
@@ -25,7 +25,7 @@ def home(request):
     return render(request, 'tienda/inicio/home.html', {'productos': productos, 'ventas': ventas, 'stock_bajo': stock_bajo, 'all_stock_bajo': all_stock_bajo, 'ventas_hoy': ventas_hoy, 'ultimas_5_ventas': ultimas_5_ventas})
 
 def StockBajoListView(request):
-    all_stock_bajo=Inventario.objects.filter(stock__lte=5)
+    all_stock_bajo = Inventario.objects.filter(stock_critico=True, stock__lte=5)
     return render(request, 'tienda/inicio/stock_bajo_list.html', {'all_stock_bajo': all_stock_bajo})
 
 # <---------------vistas de producto------------>
@@ -43,11 +43,18 @@ def ProductoListView(request):
 
     categorias = Categoria.objects.all()
 
+    venta, _ = Venta.objects.get_or_create(usuario=request.user, estado='pendiente', defaults={'estado': 'pendiente'})
+    items = venta.detalle_venta_set.all()
+    total = venta.total()
+
     contexto = {
         'productos': productos,
         'categorias': categorias,
         'query': query,
-        'categorias_seleccionadas': [int(cat_id) for cat_id in categorias_select]
+        'categorias_seleccionadas': [int(cat_id) for cat_id in categorias_select],
+        'venta': venta,
+        'items': items,
+        'total': total,
     }
     return render(request, 'tienda/producto/producto_list.html', contexto)
 
@@ -77,7 +84,8 @@ def ProductoCreateView(request):
         if form.is_valid():
             producto = form.save()
             stock = request.POST.get('stock')
-            Inventario.objects.create(producto=producto, stock=stock)
+            stock_critico = form.cleaned_data['stock_critico']
+            Inventario.objects.create(producto=producto, stock=stock, stock_critico=stock_critico)
             messages.success(request, "Producto creado exitosamente")
             return redirect('inventario-list')
     else:
@@ -99,16 +107,35 @@ def ProductoDeleteView(request, id):
 def ProductoUpdateView(request, id):
     producto = get_object_or_404(Producto, pk=id) 
     if request.method == "POST":
-        form = ProductoForm(request.POST, request.FILES or None, instance=producto)
+        form = ProductoUpdateForm(request.POST, request.FILES or None, instance=producto)
         if form.is_valid():
-            producto = form.save()
-            stock = request.POST.get('stock')
-            Inventario.objects.update_or_create(producto=producto, defaults={'stock': stock})
+            form.save()
             messages.success(request, "Producto modificado exitosamente")
             return redirect('inventario-list')
     else:
-        form = ProductoForm(instance=producto, initial={'stock': producto.inventario.stock})
+        form = ProductoUpdateForm(instance=producto)
     return render(request, 'tienda/producto/producto_form.html', {'form': form, 'action': 'Modificar'})
+
+@login_required
+@user_passes_test(administrador_required)
+def InventarioUpdateView(request, id):
+    producto = get_object_or_404(Producto, pk=id)
+    inventario, created = Inventario.objects.get_or_create(producto=producto, defaults={'stock': 0})
+    
+    if request.method == "POST":
+        form = InventarioForm(request.POST, instance=inventario)
+        if form.is_valid():
+            form.save()
+            messages.success(request, f"Stock de {producto.nombre} actualizado exitosamente")
+            return redirect('inventario-list')
+    else:
+        form = InventarioForm(instance=inventario)
+    
+    return render(request, 'tienda/inventario/inventario_form.html', {
+        'form': form, 
+        'producto': producto,
+        'action': 'Modificar Stock'
+    })
 # <---------------vistas de categoria------------>
 
 @login_required
@@ -174,7 +201,7 @@ def agregar_al_carrito(request, producto_id):
     messages.success(request, "Producto agregado al carrito.")
     return redirect('producto-list')
 
-def ver_carrito(request):
+"""def ver_carrito(request):
     venta, _ = Venta.objects.get_or_create(usuario=request.user, estado='pendiente', defaults={'estado': 'pendiente'})
     
     items = venta.detalle_venta_set.all()
@@ -185,16 +212,16 @@ def ver_carrito(request):
         'items': items,
         'total': total,
     })
-
+"""
 @login_required
 def incrementar_item(request, item_id):
     item = get_object_or_404(Detalle_venta, id=item_id)
     if item.cantidad + 1 > item.producto.inventario.stock:
         messages.error(request, "No hay suficiente stock disponible para este producto")
-        return redirect("ver_carrito")
+        return redirect("producto-list")
     item.cantidad += 1
     item.save()
-    return redirect('ver_carrito')
+    return redirect('producto-list')
 
 
 @login_required
@@ -205,7 +232,7 @@ def disminuir_item(request, item_id):
         item.save()
     else:
         item.delete()
-    return redirect('ver_carrito')
+    return redirect('producto-list')
 
 
 @login_required
@@ -213,7 +240,7 @@ def eliminar_item(request, item_id):
     item = get_object_or_404(Detalle_venta, id=item_id)
     item.delete()
     messages.success(request, "Item eliminado del carrito.")
-    return redirect('ver_carrito')
+    return redirect('producto-list')
 
 
 @login_required
@@ -221,7 +248,7 @@ def vaciar_carrito(request):
     venta, _ = Venta.objects.get_or_create(usuario=request.user, estado='pendiente', defaults={'estado': 'pendiente'})
     venta.detalle_venta_set.all().delete()
     messages.success(request, "Se ha vaciado el carrito")
-    return redirect('ver_carrito')
+    return redirect('producto-list')
 
 
 @login_required
@@ -230,7 +257,7 @@ def resumen_pago(request):
     items = venta.detalle_venta_set.all()
 
     if not items.exists():
-        return redirect('ver_carrito')
+        return redirect('producto-list')
 
     total_final = venta.total() 
     

@@ -9,7 +9,7 @@ class UsuarioForm(forms.ModelForm):
     password = forms.CharField(widget=forms.PasswordInput(attrs={'class': 'form-control', 'placeholder': '******', 'autocomplete': 'new-password'}), 
                 label='Contraseña', required=False,
         )
-
+    is_active = forms.BooleanField(label='Usuario Activo?', required=False, widget=forms.CheckboxInput(attrs={'class': 'form-check-input'}))
     class Meta:
         model = Usuario
         fields = ['nombre_completo', 'rut', 'telefono', 'rol']

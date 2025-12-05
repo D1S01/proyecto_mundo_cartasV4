@@ -2,93 +2,129 @@
 
 {% block content %}
 
+<div class="row">
+    <div class="col-md-9" id="productos-container">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1>Lista de Productos</h1>
+            <button class="btn btn-secondary" id="toggle-carrito-btn">
+                <i class="bi bi-cart"></i> Carrito
+            </button>
 
-<div class="d-flex justify-content-between align-items-center mb-4">
-        <h1>Lista de Productos</h1>
-        <div>
-            <a href="{% url 'ver_carrito' %}" class="btn btn-secondary"><i class="bi bi-cart"> Carrito</i></a>
         </div>
+
+        <form method="get" id="filtro-y-busqueda-form">
+
+            <div class="d-flex mb-4">
+                <input type="text" name="q" value="{{ query }}" placeholder="Buscar por nombre..."
+                    class="form-control me-2">
+                <button type="submit" class="btn btn-primary">
+                    <i class="bi bi-search"></i> Buscar
+                </button>
+            </div>
+
+            {% for c in categorias %}
+            <div class="form-check form-check-inline mb-1">
+                <input class="form-check-input" type="checkbox" name="categoria" id="cat{{ c.id }}" value="{{ c.id }}"
+                    {% if c.id in categorias_seleccionadas %}checked{% endif %}
+                    onchange="document.getElementById('filtro-y-busqueda-form').submit();">
+
+                <label class="form-check-label" for="cat{{ c.id }}">
+                    {{ c.nombre }}
+                </label>
+            </div>
+            {% endfor %}
+
+        </form>
+
+
+        <div class="container">
+            <div class="row">
+                {% for producto in productos %}
+                <div class="col-md-4 col-lg-3 mb-4">
+                    <div class="card shadow-sm border-light h-100">
+                        <div class="p-2">
+                            {% if producto.imagen %}
+                            <a href="{% url "producto-detail" producto.id %}">
+                                <img src="{{ producto.imagen.url }}" class="card-img-top"/>
+                            </a>
+                            {% endif %}
+                        </div>
+                        <div class="card-body d-flex flex-column">
+                            <h5 class="card-title">{{ producto.nombre }}</h5>
+                            <p class="card-text"><strong>Precio:</strong> ${{ producto.precio }}</p>
+                            <p class="card-text"><strong>Stock:</strong> 
+                                {% if producto.inventario %}
+                                    {{ producto.inventario.stock }}
+                                {% endif %}
+                            </p>
+
+                            <div class="d-flex justify-content-between">
+                                
+                                <form action="{% url 'agregar_al_carrito' producto.id %}" method="post">
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn btn-success btn-sm">Agregar</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% empty %}
+                <div class="col-12">
+                    <p>No hay productos disponibles.</p>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+
     </div>
 
-<form method="get" id="filtro-y-busqueda-form">
-    
-    <div class="d-flex mb-4">
-        <input type="text" 
-               name="q" 
-               value="{{ query }}" 
-               placeholder="Buscar por nombre..."
-               class="form-control me-2">
-        <button type="submit" class="btn btn-primary">
-            <i class="bi bi-search"></i> Buscar
-        </button>
-    </div>
+    <div class="col-md-3" id="carrito-container">
 
-    {% for c in categorias %}
-    <div class="form-check form-check-inline mb-1">
-        <input class="form-check-input"
-               type="checkbox"
-               name="categoria"
-               id="cat{{ c.id }}"
-               value="{{ c.id }}"
-               {% if c.id in categorias_seleccionadas %}checked{% endif %}
-               
-               onchange="document.getElementById('filtro-y-busqueda-form').submit();">
-        
-        <label class="form-check-label" for="cat{{ c.id }}">
-            {{ c.nombre }}
-        </label>
-    </div>
-    {% endfor %}
-    
-</form>
+        <div class="card sticky-top" style="top: 20px;">
+            <div class="card-header bg-primary text-white">
+                <strong><i class="bi bi-cart"></i> Carrito</strong>
+            </div>
 
+            <div class="card-body" style="max-height: 60vh; overflow-y:auto;">
+                {% if items %}
+                {% for item in items %}
+                <div class="d-flex justify-content-between align-items-center mb-2 border-bottom pb-1">
+                    <span>{{ item.producto.nombre }}</span>
 
-<div class="d-flex flex-wrap">
-    
-    {% for producto in productos %}
-        <div class="card m-2" style="width: 18rem">
-            <div class="p-2">
-            {% if producto.imagen %}
-                <img src="{{ producto.imagen.url }}" class="card-img-top" alt="..." />
+                    <div class="d-flex">
+                        <a href="{% url 'disminuir_item' item.id %}" class="btn btn-sm btn-success">
+                            <i class="bi bi-dash-lg"></i>
+                        </a>
+                        <span class="mx-2">{{ item.cantidad }}</span>
+                        <a href="{% url 'incrementar_item' item.id %}" class="btn btn-sm btn-warning">
+                            <i class="bi bi-plus-lg"></i>
+                        </a>
+                    </div>
+
+                    <a href="{% url 'eliminar_item' item.id %}" class="text-danger">
+                        <i class="bi bi-trash btn btn-sm btn-danger"></i>
+                    </a>
+                </div>
+                {% endfor %}
+                {% else %}
+                <p class="text-center text-muted">Carrito vacío</p>
+                {% endif %}
+            </div>
+
+            {% if items %}
+            <div class="card-footer">
+                <strong>Total: ${{ total }}</strong>
+                <div class="mt-2">
+                    <a href="{% url 'resumen_pago' %}" class="btn btn-success btn-sm w-100">Pagar</a>
+                    <a href="{% url 'vaciar_carrito' %}" class="btn btn-danger btn-sm w-100 mt-1">Vaciar</a>
+                </div>
+            </div>
             {% endif %}
-            </div>
-            <div class="card-body">
-                <h5 class="card-title">{{ producto.nombre }}</h5>
-                <p class="card-text">
-                    Categoria:<ul>
-                    {% for c in producto.categoria.all %}
-                        <li>{{ c.nombre }}</li>
-                    {% empty %}
-                        <li>n/a</li>
-                    {% endfor %}
-                    </ul>
-                </p>
-                <p class="card-text">Precio: ${{ producto.precio }}</p>
-                <p class="card-text">stock:
-                    <ul>
-                        {% if producto.inventario %}
-                            {{ producto.inventario.stock }}
-                        {% else %}
-                            0
-                        {% endif %}
-                    </ul>
-                </p>
-                 <form action="{% url 'agregar_al_carrito' producto.id %}" method="post">
-                    {% csrf_token %}
-                    <button type="submit" class="btn btn-success">agregar</button>
-                 </form>
-                    <a href="{% url 'producto-detail' producto.id %}" class="btn btn-primary mt-2">Ver detalles</a>
-                {% comment %} <p class="card-text">Publicacion: {{ book.anio_publicacion }}</p> {% endcomment %}
-                {% comment %}
-                <a href="{% url 'producto-update' producto.id %}" class="btn btn-warning">Editar</a>
-                <a href="{% url 'producto-delete' producto.id %}" class="btn btn-danger">Eliminar</a>
-                {% endcomment %}
-                 
-            </div>
-        </div>  
-    {% empty %}
-      <p>No hay productos guardados</p>
-    {% endfor %}
+        </div>
+
+    </div>
 </div>
+{% load static %}
+<script src="{% static 'js/cosas.js' %}"></script>
 
 {% endblock content %}

@@ -27,9 +27,7 @@
         </div>
     </div>
 
-    <div class="card">
-        <div class="card-body p-0">
-            <div class="table-responsive">
+      <div class="table-responsive">
                 <table class="table mb-0">
                     <thead class="table-primary">
                             <th>Nombre</th>
@@ -45,7 +43,9 @@
                         <tbody>
                             {% for i in productos %}
                             <tr>
-                                <td class="fw-bold text-black">
+               <div class="card">
+        <div class="card-body p-0">
+                           <td class="fw-bold text-black ">
                                     {{ i.nombre }}
                                 </td>
 
@@ -75,10 +75,13 @@
 
                                 <td class="text-center">
                                     <div class="btn-group">
+                                        <a href="{% url 'inventario-update' i.id %}" class="btn btn-sm btn-warning">
+                                            <i class="bi bi-box-seam"></i> 
+                                        </a>
                                         <a href="{% url 'producto-update' i.id %}" class="btn btn-sm btn-primary">
                                             <i class="bi bi-pencil-fill"></i> 
                                         </a>
-                                        <a href="{% url 'producto-delete' i.id %}" class="btn btn-sm btn-danger ms-1">
+                                        <a href="{% url 'producto-delete' i.id %}" class="btn btn-sm btn-danger">
                                             <i class="bi bi-trash-fill"></i> 
                                         </a>
                                     </div>

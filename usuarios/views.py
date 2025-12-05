@@ -42,13 +42,14 @@ def UsuarioCreateView(request):
                 username=form.cleaned_data['username'],
                 password=form.cleaned_data['password']
             )
+            user.is_active = form.cleaned_data['is_active']
             usuario = form.save(commit=False)
             usuario.user = user
             usuario.save()
             messages.success(request, "Usuario creado exitosamente")
             return redirect('usuario-list')
     else:
-        form = UsuarioForm()
+        form = UsuarioForm(initial={'is_active': True})
     return render(request, 'usuarios/usuario_form.html', {'form': form, 'action': 'Crear'})
 
 @login_required
@@ -60,6 +61,7 @@ def UsuarioUpdateView(request, id):
         if form.is_valid():
             user = usuario.user
             user.username = form.cleaned_data['username']
+            user.is_active = form.cleaned_data['is_active']
             if form.cleaned_data['password']:
                 user.set_password(form.cleaned_data['password'])
             user.save()
@@ -67,7 +69,8 @@ def UsuarioUpdateView(request, id):
             messages.success(request, "Usuario modificado exitosamente")
             return redirect('usuario-list')
     else:
-        form = UsuarioForm(instance=usuario, initial={'username': usuario.user.username})
+        form = UsuarioForm(instance=usuario, initial={'username': usuario.user.username, 
+                                                      'is_active': usuario.user.is_active})
     return render(request, 'usuarios/usuario_form.html', {'form': form, 'action': 'Modificar'})
 
 @login_required
