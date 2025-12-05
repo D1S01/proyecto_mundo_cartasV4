@@ -1,3 +1,4 @@
+from calendar import calendar
 from django.shortcuts import render, redirect, get_object_or_404
 from .models import Producto, Categoria, Inventario, Venta, Detalle_venta
 from .forms import ProductoForm, CategoriaForm, ProductoUpdateForm, InventarioForm
@@ -8,6 +9,7 @@ from django.db.models import Q
 import datetime
 from django.contrib import messages
 from django.contrib.auth.decorators import user_passes_test
+import calendar
 # Create your views here.
 
 def administrador_required(user):
@@ -20,8 +22,8 @@ def home(request):
     stock_bajo = all_stock_bajo.count()
     # for i in stock_bajo:
     #     print(i.producto.nombre, i.stock)
-    ventas_hoy=Venta.objects.filter(fecha_venta__date=datetime.date.today()).count()
-    ultimas_5_ventas=Venta.objects.filter(fecha_venta__date=datetime.date.today()).order_by('-fecha_venta')[:5]
+    ventas_hoy=Venta.objects.filter(fecha_venta__date=datetime.date.today(), estado="pagada").count()
+    ultimas_5_ventas=Venta.objects.filter(fecha_venta__date=datetime.date.today(), estado="pagada" ).order_by('-fecha_venta')[:5]
     return render(request, 'tienda/inicio/home.html', {'productos': productos, 'ventas': ventas, 'stock_bajo': stock_bajo, 'all_stock_bajo': all_stock_bajo, 'ventas_hoy': ventas_hoy, 'ultimas_5_ventas': ultimas_5_ventas})
 
 def StockBajoListView(request):
@@ -294,23 +296,56 @@ def pagar(request):
     
     return render(request, 'tienda/carrito/pago.html')
 
+@login_required
+@user_passes_test(administrador_required)
+def reporte_ventas_año(request):
+    años = (
+        Venta.objects.filter(estado="pagada")
+        .values_list("fecha_venta__year", flat=True)
+        .distinct()
+        .order_by("-fecha_venta__year")
+    )
+    return render(request, "tienda/reporte/venta_años.html", {"años": años})
 
 @login_required
 @user_passes_test(administrador_required)
-def reporte_ventas_dias(request):
+def reporte_ventas_mes(request, año):
+    # se procedera a mandar los nombres de los meses con ventas en el año seleccionado
+    meses = (
+        Venta.objects.filter(estado="pagada", fecha_venta__year=año)
+        .values_list("fecha_venta__month", flat=True)
+        .distinct()
+        .order_by("-fecha_venta__month")
+    )
+
+    # for i in meses:
+        # i = calendar.month_name[i]  # Imprime el nombre del mes correspondiente
+        # print(calendar.month_name[i], "this os the month name")
+        # i = i.strftime("%B")  # Formatea el mes como nombre completo
+
+    
+    # Convertir números a nombres
+    # meses = [{"numero": m, "nombre": calendar.month_name[m]} for m in meses]
+
+    
+    return render(request, "tienda/reporte/venta_meses.html", {"meses": meses, "año": año})
+
+@login_required
+@user_passes_test(administrador_required)
+def reporte_ventas_dias(request, año, mes):
     dias = (
-        Venta.objects.filter(estado="pagada")
+        Venta.objects.filter(estado="pagada", fecha_venta__year=año, fecha_venta__month=mes)
         .values_list("fecha_venta__date", flat=True)
         .distinct()
         .order_by("-fecha_venta__date")
     )
-    return render(request, "tienda/reporte/venta_dias.html", {"dias": dias})
+    return render(request, "tienda/reporte/venta_dias.html", {"dias": dias, "mes": mes, "año": año})
 
 @login_required
 @user_passes_test(administrador_required)
-def reporte_ventas(request, fecha):
+def reporte_ventas(request, fecha, año, mes):
     ventas = Venta.objects.filter(
         estado="pagada",
         fecha_venta__date=fecha).prefetch_related("detalle_venta_set__producto", "usuario")
 
-    return render(request,"tienda/reporte/reporte_ventas.html",{"ventas": ventas, "fecha": fecha})
+    return render(request,"tienda/reporte/reporte_ventas.html",{"ventas": ventas, "fecha": fecha, "mes": mes, "año": año})

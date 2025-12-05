@@ -2,15 +2,40 @@
 
 {% block content %}
 
-<div class="row">
-    <div class="col-md-9" id="productos-container">
-        <div class="d-flex justify-content-between align-items-center mb-4">
-            <h1>Lista de Productos</h1>
-            <button class="btn btn-secondary" id="toggle-carrito-btn">
-                <i class="bi bi-cart"></i> Carrito
-            </button>
+<style>
+    
+/* Contenedor de las tarjetas */
+.d-flex.flex-wrap {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 16px;
+}
 
+/* Tarjeta uniforme */
+.card {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 100%;
+}
+
+/* Imagen dentro de la tarjeta */
+.card-img-top {
+    width: 100%;
+    height: 200px; /* Ajusta según tu diseño */
+    object-fit: cover; /* Recorta sin deformar */
+    border-radius: 8px;
+    object-fit: contain;
+}
+
+</style>
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>Lista de Productos</h1>
+        <div>
+            <a href="{% url 'ver_carrito' %}" class="btn btn-secondary"><i class="bi bi-cart"> Carrito</i></a>
         </div>
+    </div>
 
         <form method="get" id="filtro-y-busqueda-form">
 

@@ -22,13 +22,13 @@
         </div>
         <div class="text-center card" style="background-color: #d9d9d9; border: none; min-width: 155px; max-height: 100px;">
             <p>Stock bajo:</p>
-            <p><a href="{% url 'stock_bajo_list' %}" style="text-decoration: none; color: black;">{{ stock_bajo }}</a></p>
+            <p><a href="{% url 'stock_bajo_list' %}" style="text-decoration: none; color: red;">{{ stock_bajo }}</a></p>
             {% comment %} {% for item in all_stock_bajo %}
                 <p>{{ item.producto.nombre }} - {{ item.stock }}</p>
             {% endfor %} {% endcomment %}
         </div>
     </div>
-    <div class="mt-4 card" style="overflow-y: scroll; max-height: 260px; min-height: 250px; background-color: #d9d9d9; border: none;">
+    <div class="mt-4 card p-2" style="overflow-y: scroll; max-height: 260px; min-height: 250px; background-color: #d9d9d9; border: none;">
         <p>Actividades recientes</p>
         <div>
             {% for venta in ultimas_5_ventas %}

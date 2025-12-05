@@ -31,8 +31,8 @@
             </ul>
         </p>
         <form action="{% url 'agregar_al_carrito' producto.id %}" method="post">
-            {% csrf_token %}
-            <button type="submit"><i class="bi bi-plus-circle"></button>
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-success">agregar</button>
         </form>
         <a href="{% url 'producto-list' %}" class="btn btn-primary">Volver</a>
         {% comment %} <p class="card-text">Publicacion: {{ book.anio_publicacion }}</p> {% endcomment %}
