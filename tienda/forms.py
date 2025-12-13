@@ -11,11 +11,12 @@ class ProductoForm(forms.ModelForm):
     )
     class Meta:
         model = Producto
-        fields = ['nombre', 'precio','proveedor', 'categoria', 'imagen', 'stock','stock_critico', 'codigo_barra', ]
+        fields = ['nombre', 'descripcion', 'precio','proveedor', 'categoria', 'imagen', 'stock','stock_critico', 'codigo_barra', ] 
         widgets = {
             'nombre': forms.TextInput(attrs={'class': 'form-control'}),
+            'descripcion': forms.TextInput(attrs={'class': 'form-control'}),
             'precio': forms.NumberInput(attrs={'class': 'form-control', 'min': '0'}),
-            'proveedor': forms.TextInput(attrs={'class': 'form-control'}),
+            'proveedor': forms.Select(attrs={'class': 'form-select'}),
             'imagen': forms.FileInput(attrs={'class': 'form-control'}),
             'categoria': forms.CheckboxSelectMultiple(),
             'codigo_barra': forms.TextInput(attrs={'class': 'form-control'}),
@@ -24,11 +25,12 @@ class ProductoForm(forms.ModelForm):
 class ProductoUpdateForm(forms.ModelForm):
     class Meta:
         model = Producto
-        fields = ['nombre', 'precio','proveedor', 'categoria', 'imagen', 'codigo_barra', ]
+        fields = ['nombre', 'descripcion', 'precio','proveedor', 'categoria', 'imagen', 'codigo_barra', ]
         widgets = {
             'nombre': forms.TextInput(attrs={'class': 'form-control'}),
+            'descripcion': forms.TextInput(attrs={'class': 'form-control'}),
             'precio': forms.NumberInput(attrs={'class': 'form-control', 'min': '0'}),
-            'proveedor': forms.TextInput(attrs={'class': 'form-control'}),
+            'proveedor': forms.Select(attrs={'class': 'form-select'}),
             'imagen': forms.FileInput(attrs={'class': 'form-control'}),
             'categoria': forms.CheckboxSelectMultiple(),
             'codigo_barra': forms.TextInput(attrs={'class': 'form-control'}),
