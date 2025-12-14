@@ -3,15 +3,15 @@
 {% block content %}
 <div class="container mt-4" style="max-width: 500px;">
     
-    <div class="card p-4 border-0">
-        <h2 class="text-black fw-bold mb-4">Formulario de Productos</h2>
+    <div class="card p-4 shadow-sm border-0">
+        <h2 class="text-black fw-bold mb-4">Formulario de Usuario</h2>
         
-        <form method="post" enctype="multipart/form-data">
+        <form method="post">
             {% csrf_token %}
             {{form}}
             <div class="d-grid gap-2 mt-4">
-                <button type="submit" class="btn btn-success">Guardar</button>
-                <a href="{% url 'inventario-list' %}" class="btn btn-secondary">Cancelar</a>
+                <button type="submit" class="btn btn-primary">Guardar</button>
+                <a href="{% url 'usuario-list' %}" class="btn btn-secondary">Cancelar</a>
             </div>
 
         </form>

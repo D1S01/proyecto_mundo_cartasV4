@@ -7,6 +7,12 @@ class Categoria(models.Model):
 
     def __str__(self):
         return self.nombre
+    
+class Proveedor(models.Model):
+    nombre = models.CharField(max_length=254, unique=True)
+
+    def __str__(self):
+        return self.nombre
 
 class Producto(models.Model):
     nombre=models.CharField(max_length=254)
@@ -14,7 +20,8 @@ class Producto(models.Model):
     categoria=models.ManyToManyField(Categoria)
     imagen=models.ImageField(upload_to="productos")
     codigo_barra=models.CharField(max_length=254, unique=True, blank=True, null=True)
-    proveedor=models.CharField(max_length=254, blank=True, null=True)
+    proveedor = models.ForeignKey(Proveedor, on_delete=models.SET_NULL, blank=True, null=True)
+    descripcion=models.CharField(max_length=500, blank=True, null=True)
 
     def __str__(self):
         return self.nombre
