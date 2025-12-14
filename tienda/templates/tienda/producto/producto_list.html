@@ -2,6 +2,31 @@
 
 {% block content %}
 
+<style>
+
+/* productos-container */
+#productos-container .card-img-top {
+    width: 100%;
+    height: 200px;
+    object-fit: contain; 
+    border-radius: 8px;
+}
+
+#productos-container .card {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+/* Para que las tarjetas sean consistentes */
+#productos-container .card-body {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+</style>
+
 <div class="row">
     <div class="col-md-9" id="productos-container">
         <div class="d-flex justify-content-between align-items-center mb-4">
@@ -9,7 +34,6 @@
             <button class="btn btn-secondary" id="toggle-carrito-btn">
                 <i class="bi bi-cart"></i> Carrito
             </button>
-
         </div>
 
         <form method="get" id="filtro-y-busqueda-form">
@@ -36,7 +60,6 @@
 
         </form>
 
-
         <div class="container">
             <div class="row">
                 {% for producto in productos %}
@@ -44,7 +67,7 @@
                     <div class="card shadow-sm border-light h-100">
                         <div class="p-2">
                             {% if producto.imagen %}
-                            <a href="{% url "producto-detail" producto.id %}">
+                            <a href="{% url 'producto-detail' producto.id %}">
                                 <img src="{{ producto.imagen.url }}" class="card-img-top"/>
                             </a>
                             {% endif %}
@@ -59,7 +82,6 @@
                             </p>
 
                             <div class="d-flex justify-content-between">
-                                
                                 <form action="{% url 'agregar_al_carrito' producto.id %}" method="post">
                                     {% csrf_token %}
                                     <button type="submit" class="btn btn-success btn-sm">Agregar</button>
@@ -124,6 +146,7 @@
 
     </div>
 </div>
+
 {% load static %}
 <script src="{% static 'js/cosas.js' %}"></script>
 

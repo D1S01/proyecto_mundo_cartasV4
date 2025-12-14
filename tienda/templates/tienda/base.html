@@ -38,7 +38,8 @@
                 {% endif %}
                 <li><a class="nav-link text-white" href="{% url 'producto-list' %}">Punto de venta</a></li>
                 {% if user.usuarios.rol.nombre == 'Administrador' %}
-                <li><a class="nav-link text-white" href="{% url 'reporte_dias' %}">Reportes</a></li>
+                <li><a class="nav-link text-white" href="{% url 'reporte_años' %}">Reportes</a></li>
+                
                 <li><a class="nav-link text-white" href="{% url 'usuario-list' %}">Usuarios</a></li>
                 {% endif %}
             {% endif %}
@@ -69,7 +70,7 @@
     <!-- Notyf -->
     <script src="https://cdn.jsdelivr.net/npm/notyf@3/notyf.min.js"></script>
     <!-- Vanilla DataTables -->
-    {% comment %} <script src="https://unpkg.com/vanilla-datatables@latest/dist/vanilla-dataTables.min.js" type="text/javascript"></script> {% endcomment %}
+    <script src="https://unpkg.com/vanilla-datatables@latest/dist/vanilla-dataTables.min.js" type="text/javascript"></script>
     <script>      
       {% if messages %}
       const notyf = new Notyf({
@@ -92,7 +93,7 @@
     </script> 
     <style>
       .notyf {
-        margin-left: 9rem;
+        margin-left: 6rem;
       }
     </style>
   </body>

@@ -2,7 +2,7 @@ from django.urls import path
 from .views import (ProductoListView, ProductoCreateView, ProductoDetailView, ProductoDeleteView, ProductoUpdateView,CategoriaListView, 
                     CategoriaCreateView, CategoriaDeleteView, CategoriaUpdateView, InventarioListView, InventarioUpdateView, 
                       agregar_al_carrito, eliminar_item,
-                    incrementar_item, disminuir_item, vaciar_carrito, resumen_pago, pagar, home, reporte_ventas_dias, reporte_ventas, StockBajoListView)  
+                    incrementar_item, disminuir_item, vaciar_carrito, resumen_pago, pagar, home, reporte_ventas_año, reporte_ventas_mes, reporte_ventas_dias, reporte_ventas, StockBajoListView)  
 
 urlpatterns=[
     path('inicio/', home, name='home'),
@@ -35,8 +35,10 @@ urlpatterns=[
     path('pago/resumen/', resumen_pago, name='resumen_pago'),
     path('carrito/pagar/', pagar, name='pagar'),
     
-    path("reportes/", reporte_ventas_dias, name="reporte_dias"),
-    path("reportes/<fecha>/", reporte_ventas, name="reporte_ventas"),
+    path("reportes/años/", reporte_ventas_año, name="reporte_años"),
+    path("reportes/mes/<int:año>/", reporte_ventas_mes, name="reporte_meses"),
+    path("reportes/dias/<int:año>/<int:mes>/", reporte_ventas_dias, name="reporte_dias"),
+    path("reportes/<fecha>/<int:año>/<int:mes>/", reporte_ventas, name="reporte_ventas"),
 
 
  
