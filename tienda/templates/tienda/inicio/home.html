@@ -34,7 +34,10 @@
             {% for venta in ultimas_5_ventas %}
                 <div class="d-flex justify-content-between">
                     <span>Venta #{{ venta.id }}</span>
-                    <span>{{ venta.fecha_venta }}</span>
+                    {% comment %} <span>{{ venta.fecha_venta }}</span> {% endcomment %}
+                    {% load tz %}
+                    {% comment %} <span>{{ venta.fecha_venta|localtime }}</span> {% endcomment %}
+                    <span>{{ venta.fecha_venta|localtime|date:"d/m/Y H:i" }}</span>
                 </div>
 
                 <p><strong>Vendedor:</strong> {{ venta.usuario.usuarios.nombre_completo }}</p>
