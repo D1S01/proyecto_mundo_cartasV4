@@ -13,10 +13,11 @@
             {% if meses %}
                 <div class="list-group">
                     {% for i in meses %}
-                        <a href="{% url 'reporte_dias' año i %}" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center p-3">
+                        <a href="{% url 'reporte_dias' año i.numero %}" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center p-3">
                             <span class="fw-bold text-dark">
                                 {% comment %} <i class="bi bi-calendar-date me-2 text-muted"></i> {{ i.nombre }} {% endcomment %}
-                                <i class="bi bi-calendar-date me-2 text-muted"></i> {% if i == 1 %} Enero {% elif i == 2 %} Febrero {% elif i == 3 %} Marzo {% elif i == 4 %} Abril {% elif i == 5 %} Mayo {% elif i == 6 %} Junio {% elif i == 7 %} Julio {% elif i == 8 %} Agosto {% elif i == 9 %} Septiembre {% elif i == 10 %} Octubre {% elif i == 11 %} Noviembre {% elif i == 12 %} Diciembre {% endif %}
+                                {% comment %} <i class="bi bi-calendar-date me-2 text-muted"></i> {% if i == 1 %} Enero {% elif i == 2 %} Febrero {% elif i == 3 %} Marzo {% elif i == 4 %} Abril {% elif i == 5 %} Mayo {% elif i == 6 %} Junio {% elif i == 7 %} Julio {% elif i == 8 %} Agosto {% elif i == 9 %} Septiembre {% elif i == 10 %} Octubre {% elif i == 11 %} Noviembre {% elif i == 12 %} Diciembre {% endif %} {% endcomment %}
+                                <i class="bi bi-calendar-date me-2 text-muted"></i> {{ i.nombre|capfirst }}
                             </span>
                             <i class="bi bi-chevron-right text-muted"></i>
                         </a>

@@ -10,6 +10,10 @@ import datetime
 from django.contrib import messages
 from django.contrib.auth.decorators import user_passes_test
 import calendar
+from django.utils import timezone
+import locale
+locale.setlocale(locale.LC_TIME, "es_ES.UTF-8")
+
 # Create your views here.
 
 def administrador_required(user):
@@ -22,8 +26,8 @@ def home(request):
     stock_bajo = all_stock_bajo.count()
     # for i in stock_bajo:
     #     print(i.producto.nombre, i.stock)
-    ventas_hoy=Venta.objects.filter(fecha_venta__date=datetime.date.today(), estado="pagada").count()
-    ultimas_5_ventas=Venta.objects.filter(fecha_venta__date=datetime.date.today(), estado="pagada" ).order_by('-fecha_venta')[:5]
+    ventas_hoy=Venta.objects.filter(fecha_venta__date=timezone.now().date(), estado="pagada").count()
+    ultimas_5_ventas=Venta.objects.filter(fecha_venta__date=timezone.now().date(), estado="pagada" ).order_by('-fecha_venta')[:5]
     return render(request, 'tienda/inicio/home.html', {'productos': productos, 'ventas': ventas, 'stock_bajo': stock_bajo, 'all_stock_bajo': all_stock_bajo, 'ventas_hoy': ventas_hoy, 'ultimas_5_ventas': ultimas_5_ventas})
 
 def StockBajoListView(request):
@@ -311,7 +315,7 @@ def reporte_ventas_año(request):
 @user_passes_test(administrador_required)
 def reporte_ventas_mes(request, año):
     # se procedera a mandar los nombres de los meses con ventas en el año seleccionado
-    meses = (
+    meses_venta = (
         Venta.objects.filter(estado="pagada", fecha_venta__year=año)
         .values_list("fecha_venta__month", flat=True)
         .distinct()
@@ -327,8 +331,16 @@ def reporte_ventas_mes(request, año):
     # Convertir números a nombres
     # meses = [{"numero": m, "nombre": calendar.month_name[m]} for m in meses]
 
+    # meses_legibles = []
+    # for mes in meses_venta:
+    #     nombre_mes = calendar.month_name[mes]
+    #     meses_legibles.append({"numero": mes, "nombre": nombre_mes})
+    # meses = [m['numero'] for m in meses_legibles]
+    meses_legibles = [{"numero": m, "nombre": calendar.month_name[m]} for m in meses_venta]
+
+
     
-    return render(request, "tienda/reporte/venta_meses.html", {"meses": meses, "año": año})
+    return render(request, "tienda/reporte/venta_meses.html", {"meses": meses_legibles, "año": año})
 
 @login_required
 @user_passes_test(administrador_required)
@@ -339,13 +351,22 @@ def reporte_ventas_dias(request, año, mes):
         .distinct()
         .order_by("-fecha_venta__date")
     )
-    return render(request, "tienda/reporte/venta_dias.html", {"dias": dias, "mes": mes, "año": año})
+    # dias_legibles = [dia.day for dia in dias]
+    mes_legible = calendar.month_name[mes]
+    return render(request, "tienda/reporte/venta_dias.html", {"dias": dias, "mes": mes, "mes_legible": mes_legible, "año": año})
 
 @login_required
 @user_passes_test(administrador_required)
-def reporte_ventas(request, fecha, año, mes):
+def reporte_ventas(request, fecha):
     ventas = Venta.objects.filter(
         estado="pagada",
         fecha_venta__date=fecha).prefetch_related("detalle_venta_set__producto", "usuario")
+    
+    total_ventas_dia = sum(venta.total() for venta in ventas)
+    
+    #extrayendo mes y año de la fecha
+    formatted_date = datetime.datetime.strptime(fecha, "%Y-%m-%d")
+    mes = formatted_date.month
+    año = formatted_date.year
 
-    return render(request,"tienda/reporte/reporte_ventas.html",{"ventas": ventas, "fecha": fecha, "mes": mes, "año": año})
+    return render(request,"tienda/reporte/reporte_ventas.html",{"ventas": ventas, "total_ventas_dia": total_ventas_dia, "fecha": fecha, "mes": mes, "año": año})
