@@ -45,7 +45,7 @@ urlpatterns=[
     path("reportes/años/", reporte_ventas_año, name="reporte_años"),
     path("reportes/mes/<int:año>/", reporte_ventas_mes, name="reporte_meses"),
     path("reportes/dias/<int:año>/<int:mes>/", reporte_ventas_dias, name="reporte_dias"),
-    path("reportes/<fecha>/<int:año>/<int:mes>/", reporte_ventas, name="reporte_ventas"),
+    path("reportes/<fecha>/", reporte_ventas, name="reporte_ventas"),
 
     path('producto/etiqueta/<int:id>/', imprimir_etiqueta, name='imprimir-etiqueta'),
 

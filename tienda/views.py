@@ -26,8 +26,8 @@ def home(request):
     stock_bajo = all_stock_bajo.count()
     # for i in stock_bajo:
     #     print(i.producto.nombre, i.stock)
-    ventas_hoy=Venta.objects.filter(fecha_venta__date=datetime.date.today(), estado="pagada").count()
-    ultimas_5_ventas=Venta.objects.filter(fecha_venta__date=datetime.date.today(), estado="pagada" ).order_by('-fecha_venta')[:5]
+    ventas_hoy=Venta.objects.filter(fecha_venta__date=timezone.now().date(), estado="pagada").count()
+    ultimas_5_ventas=Venta.objects.filter(fecha_venta__date=timezone.now().date(), estado="pagada" ).order_by('-fecha_venta')[:5]
     return render(request, 'tienda/inicio/home.html', {'productos': productos, 'ventas': ventas, 'stock_bajo': stock_bajo, 'all_stock_bajo': all_stock_bajo, 'ventas_hoy': ventas_hoy, 'ultimas_5_ventas': ultimas_5_ventas})
 
 def StockBajoListView(request):
@@ -448,7 +448,9 @@ def reporte_ventas_dias(request, año, mes):
         .distinct()
         .order_by("-fecha_venta__date")
     )
-    return render(request, "tienda/reporte/venta_dias.html", {"dias": dias, "mes": mes, "año": año})
+    # dias_legibles = [dia.day for dia in dias]
+    mes_legible = calendar.month_name[mes]
+    return render(request, "tienda/reporte/venta_dias.html", {"dias": dias, "mes": mes, "mes_legible": mes_legible, "año": año})
 
 @login_required
 def boleta(request, id):
