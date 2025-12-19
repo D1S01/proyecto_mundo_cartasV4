@@ -1,0 +1,14 @@
+{% extends 'tienda/base.html' %}
+
+{% block content %}
+
+<h1>Eliminar Proveedor</h1>
+
+<form method="post">
+    {% csrf_token %}
+    <h3>¿Desea eliminar este proveedor <strong>{{ proveedor.nombre }}</strong>?</h3>
+    <button class="btn btn-danger">Eliminar Proveedor</button>
+    <a class="btn btn-secondary" href="{% url 'proveedor-list' %}">Cancelar</a>
+</form>
+
+{% endblock content %}

@@ -12,9 +12,16 @@ def login_view(request):
     if request.method == "POST":
         form = AuthenticationForm(request, data=request.POST)
         if form.is_valid():
-            messages.success(request, f"Bienvenid@ {form.get_user().username}")
             user = form.get_user()
             login(request, user)
+            messages.success(request, f"Bienvenido {user.usuarios.nombre_completo}")
+            
+            try:
+                if hasattr(user, 'usuarios') and user.usuarios.rol.nombre.lower() == 'vendedor':
+                    return redirect('resumen_pago')
+            except (AttributeError, Usuario.DoesNotExist):
+                pass
+            
             return redirect('home')
         else:
             messages.error(request, "Error: usuario o contraseña incorrectos")

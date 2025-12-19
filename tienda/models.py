@@ -35,17 +35,45 @@ class Inventario(models.Model):
     def __str__(self):
         return self.producto.nombre, self.stock
 
+# proyecto_mundo_cartasV4/tienda/models.py
+
+class MovimientoInventario(models.Model):
+    TIPOS = [
+        ('entrada', 'Entrada (Reposición)'),
+        ('salida', 'Salida (Venta)'),
+    ]
+    producto = models.ForeignKey(Producto, on_delete=models.CASCADE)
+    cantidad = models.PositiveIntegerField() 
+    tipo = models.CharField(max_length=10, choices=TIPOS)
+    fecha = models.DateTimeField(auto_now_add=True)
+    referencia = models.CharField(max_length=100, blank=True, null=True) # Ej: "Venta #10"
+
+    def __str__(self):
+        return f"{self.producto.nombre} - {self.tipo} ({self.cantidad})"
+
 class Venta(models.Model):
+    METODOS_PAGO = [
+        ('efectivo', 'Efectivo'),
+        ('tarjeta', 'Tarjeta'),
+        ('transferencia', 'Transferencia'),
+    ]
     usuario = models.ForeignKey(User, on_delete=models.CASCADE)
     fecha_venta = models.DateTimeField(auto_now_add=True)
     estado = models.CharField(max_length=20, default='pendiente', 
         choices=[('pendiente', 'Pendiente'), ('pagada', 'Pagada')])
+    metodo_pago = models.CharField(max_length=20, choices=METODOS_PAGO, blank=True, null=True)
+    descuento = models.DecimalField(max_digits=5, decimal_places=2, default=0)
 
+    
     def total(self):
-        total = 0
-        for item in self.detalle_venta_set.all():
-            total += item.subtotal()
-        return total
+        return sum(item.subtotal() for item in self.detalle_venta_set.all())
+    
+    def total_con_descuento(self):
+        descuento_dinero = self.total() * (self.descuento / 100)
+        return self.total() - descuento_dinero
+    
+    def descuento_monto(self):
+        return self.total() * (self.descuento / 100)
 
     def __str__(self):
         return self.usuario.username

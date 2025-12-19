@@ -1,101 +1,125 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <!-- Bootstrap -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-LN+7fdVzj6u52u30Kp6M/trliBMCMKTyK833zpbD+pXdCLuTusPj697FH4R/5mcr" crossorigin="anonymous" />
-    <!-- Bootstrap icons -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css" />
-    <!-- Notyf -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/notyf@3/notyf.min.css" />
-    <!-- Vanilla DataTables -->
-    <link href="https://unpkg.com/vanilla-datatables@latest/dist/vanilla-dataTables.min.css" rel="stylesheet" type="text/css" />
-    {% load static %}
-    <link rel="stylesheet" href="{% static 'css/normalize.css' %}">
-    <link rel="stylesheet" href="{% static 'css/style.css' %}">
-    {% comment %} <link rel="stylesheet" href="{% static 'css/style_base.css' %}"> {% endcomment %}
-    <title>Document</title>
-  </head>
-  <body>
-    
-    <main class="d-flex vh-100">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <!-- Bootstrap -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-LN+7fdVzj6u52u30Kp6M/trliBMCMKTyK833zpbD+pXdCLuTusPj697FH4R/5mcr" crossorigin="anonymous" />
+  <!-- Bootstrap icons -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css" />
+  <!-- Notyf -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/notyf@3/notyf.min.css" />
+  <!-- Vanilla DataTables -->
+  <link href="https://unpkg.com/vanilla-datatables@latest/dist/vanilla-dataTables.min.css" rel="stylesheet"
+    type="text/css" />
+  {% load static %}
+  <link rel="stylesheet" href="{% static 'css/normalize.css' %}">
+  <link rel="stylesheet" href="{% static 'css/style.css' %}">
+  {% comment %}
+  <link rel="stylesheet" href="{% static 'css/style_base.css' %}"> {% endcomment %}
+  <title>Mundo Cartas</title>
+  <link rel="icon" type="image/png" href="{% static 'img/favicon.ico' %}">
+</head>
+
+<body>
+
+  <main class="d-flex vh-100">
     {% if request.user.is_authenticated %}
     <div class="d-flex flex-column p-3 text-white bg-primary" style="width: 280px;">
-        {% comment %} <div class="justify-content-center"> {% endcomment %}
+      {% comment %} <div class="justify-content-center"> {% endcomment %}
         <div class="d-flex flex-column align-items-center mb-2">
           <span class="fs-4 text-center">Mi Tienda</span>
           <img src="{% static 'img/mundocartas.png' %}" class="imagenM" alt="" srcset="">
           <span class=" fs-4 text-center mt-2">{{ request.user.usuarios.rol.nombre }}</span>
         </div>
         <hr>
-        
+
         <ul class="nav flex-column mb-auto text-center">
-            {% if request.user.is_authenticated %}
-                <li><a class="nav-link text-white" href="{% url "home" %}">Inicio</a></li>
-                {% if user.usuarios.rol.nombre == 'Administrador' %}
-                <li><a class="nav-link text-white" href="{% url 'inventario-list' %}">Inventario</a></li>
-                {% endif %}
-                <li><a class="nav-link text-white" href="{% url 'producto-list' %}">Punto de venta</a></li>
-                {% if user.usuarios.rol.nombre == 'Administrador' %}
-                <li><a class="nav-link text-white" href="{% url 'reporte_años' %}">Reportes</a></li>
-                
-                <li><a class="nav-link text-white" href="{% url 'usuario-list' %}">Usuarios</a></li>
-                {% endif %}
-            {% endif %}
+          {% if request.user.is_authenticated %}
+          {% if user.usuarios.rol.nombre == 'Administrador' %}
+          <li>
+            <a class="nav-link text-white {% if request.resolver_match.url_name == 'home' %}active-link{% endif %}"
+              href="{% url 'home' %}">Inicio</a>
+          </li>
+          <li>
+            <a class="nav-link text-white {% if request.resolver_match.url_name == 'inventario-list' %}active-link{% endif %}"
+              href="{% url 'inventario-list' %}">Inventario</a>
+          </li>
+          {% endif %}
+          <li>
+            <a class="nav-link text-white {% if request.resolver_match.url_name == 'producto-list' %}active-link{% endif %}"
+              href="{% url 'producto-list' %}">Punto de venta</a>
+          </li>
+          {% if user.usuarios.rol.nombre == 'Administrador' %}
+
+          <li>
+            <a class="nav-link text-white {% if request.resolver_match.url_name == 'usuario-list' %}active-link{% endif %}"
+              href="{% url 'usuario-list' %}">Usuarios</a>
+          </li>
+          {% endif %}
+          <li>
+            <a class="nav-link text-white {% if 'reporte' in request.resolver_match.url_name %}active-link{% endif %}"
+              href="{% url 'reporte_años' %}">Reportes</a>
+          </li>
+          {% endif %}
         </ul>
-        
+
         <hr>
         {% if user.is_authenticated %}
-            
-            <a class="nav-link text-white text-center" href="{% url 'logout' %}">Logout ({{ request.user.username }}) </a>
+
+        <a class="nav-link text-white text-center" href="{% url 'logout' %}">Logout ({{ request.user.username }}) </a>
         {% else %}
-            <a class="nav-link text-white" href="{% url 'login' %}">Login</a>
+        <a class="nav-link text-white" href="{% url 'login' %}">Login</a>
         {% endif %}
-    </div>
-    {% endif %}
-    <div class="container-fluid p-4" style="overflow-y: scroll;">
+      </div>
+      {% endif %}
+      <div class="container-fluid p-4" style="overflow-y: scroll;">
         {% block content %}
-           
+
         {% endblock %}
-    </div>
+      </div>
 
-</main>
+  </main>
 
-   
-    </main>
 
-    <!-- Bootstrap -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js" integrity="sha384-ndDqU0Gzau9qJ1lfW4pNLlhNTkCfHzAVBReH9diLvGRem5+R9g2FzA8ZGN954O5Q" crossorigin="anonymous"></script>
-    <!-- Notyf -->
-    <script src="https://cdn.jsdelivr.net/npm/notyf@3/notyf.min.js"></script>
-    <!-- Vanilla DataTables -->
-    <script src="https://unpkg.com/vanilla-datatables@latest/dist/vanilla-dataTables.min.js" type="text/javascript"></script>
-    <script>      
-      {% if messages %}
-      const notyf = new Notyf({
-        duration: 3000,
-        position: { x: "center", y: "top" }
-      });
+  </main>
 
-      {% for message in messages %}
-        {% if message.tags == 'success' %}
-          notyf.success("{{message|escapejs}}")
-        {% elif message.tags == 'error' %}
-          notyf.error("{{ message|escapejs }}");
-        {% elif message.tags == 'warning' %}
-          notyf.open({ type: 'warning', message: "{{ message|escapejs }}" });
-        {% else %}
-          notyf.open({ type: 'info', message: "{{ message|escapejs }}" });
-        {% endif %}
-      {% endfor %}
+  <!-- Bootstrap -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-ndDqU0Gzau9qJ1lfW4pNLlhNTkCfHzAVBReH9diLvGRem5+R9g2FzA8ZGN954O5Q"
+    crossorigin="anonymous"></script>
+  <!-- Notyf -->
+  <script src="https://cdn.jsdelivr.net/npm/notyf@3/notyf.min.js"></script>
+  <!-- Vanilla DataTables -->
+  <script src="https://unpkg.com/vanilla-datatables@latest/dist/vanilla-dataTables.min.js"
+    type="text/javascript"></script>
+  <script>
+    {% if messages %}
+    const notyf = new Notyf({
+      duration: 3000,
+      position: { x: "center", y: "top" }
+    });
+
+    {% for message in messages %}
+    {% if message.tags == 'success' %}
+    notyf.success("{{message|escapejs}}")
+    {% elif message.tags == 'error' %}
+    notyf.error("{{ message|escapejs }}");
+    {% elif message.tags == 'warning' %}
+    notyf.open({ type: 'warning', message: "{{ message|escapejs }}" });
+    {% else %}
+    notyf.open({ type: 'info', message: "{{ message|escapejs }}" });
     {% endif %}
-    </script> 
-    <style>
-      .notyf {
-        margin-left: 6rem;
-      }
-    </style>
-  </body>
-  
+    {% endfor %}
+    {% endif %}
+  </script>
+  <style>
+    .notyf {
+      margin-left: 6rem;
+    }
+  </style>
+</body>
+
 </html>

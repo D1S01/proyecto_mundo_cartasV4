@@ -6,9 +6,9 @@
 
 <form method="post">
     {% csrf_token %}
-    <h3>¿Desea eliminar este producto?</h3>
+    <h3>¿Desea eliminar este producto <strong>{{ producto.nombre }}</strong>?</h3>
     <button class="btn btn-danger">Eliminar producto</button>
-    <a class="btn btn-secondary" href="{% url 'producto-list' %}">Cancelar</a>
+    <a class="btn btn-secondary" href="{% url 'inventario-list' %}">Cancelar</a>
 </form>
 
 {% endblock content %}

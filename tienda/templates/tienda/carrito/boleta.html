@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Boleta #{{ venta.id }}</title>
+    <style>
+        body {
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 14px;
+            max-width: 300px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .info {
+            margin-bottom: 10px;
+        }
+
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 10px;
+        }
+
+        .table th,
+        .table td {
+            text-align: left;
+            padding: 5px 0;
+            border-bottom: 1px dashed #000;
+        }
+
+        .text-right {
+            text-align: right;
+        }
+
+        .totals {
+            margin-top: 10px;
+            border-top: 1px solid #000;
+            padding-top: 10px;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 12px;
+        }
+
+        @media print {
+            .no-print {
+                display: none;
+            }
+        }
+    </style>
+</head>
+
+<body onload="window.print()">
+    <div class="header">
+        <h2>Mundo Cartas</h2>
+        <p>Venta de cartas y accesorios</p>
+    </div>
+
+    <div class="info">
+        <p><strong>Boleta #:</strong> {{ venta.id }}</p>
+        <p><strong>Fecha:</strong> {{ venta.fecha_venta|date:"d/m/Y H:i" }}</p>
+        <p><strong>Vendedor:</strong> {{ venta.usuario.usuarios.nombre_completo }}</p>
+    </div>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Cant.</th>
+                <th>Producto</th>
+                <th class="text-right">Total</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in venta.detalle_venta_set.all %}
+            <tr>
+                <td>{{ item.cantidad }}</td>
+                <td>{{ item.producto.nombre }}</td>
+                <td class="text-right">${{ item.subtotal|floatformat:0 }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <div class="totals">
+        <div style="display: flex; justify-content: space-between;">
+            <span>Subtotal:</span>
+            <span>${{ venta.total|floatformat:0 }}</span>
+        </div>
+        {% if venta.descuento > 0 %}
+        <div style="display: flex; justify-content: space-between;">
+            <span>Descuento ({{ venta.descuento }}%):</span>
+            <span>-${{ venta.descuento_monto|floatformat:0 }}</span>
+        </div>
+        {% endif %}
+        <div style="display: flex; justify-content: space-between; font-weight: bold; margin-top: 5px;">
+            <span>TOTAL:</span>
+            <span>${{ venta.total_con_descuento|floatformat:0 }}</span>
+        </div>
+        <div style="display: flex; justify-content: space-between; margin-top: 5px;">
+            <span>Pago:</span>
+            <span>{{ venta.get_metodo_pago_display }}</span>
+        </div>
+    </div>
+
+    <div class="footer">
+        <p>¡Gracias por su compra!</p>
+    </div>
+
+    <div class="no-print" style="margin-top: 20px; text-align: center;">
+        <button onclick="window.print()">Imprimir</button>
+        <button onclick="window.close()">Cerrar</button>
+    </div>
+</body>
+
+</html>

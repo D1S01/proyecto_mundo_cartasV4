@@ -6,7 +6,7 @@
 
 <form method="post">
     {% csrf_token %}
-    <h3>¿Desea eliminar esta categoria?</h3>
+    <h3>¿Desea eliminar esta categoria <strong>{{ categoria.nombre}}</strong>?</h3>
     <button class="btn btn-danger">Eliminar categoria</button>
     <a class="btn btn-secondary" href="{% url 'categoria-list' %}">Cancelar</a>
 </form>

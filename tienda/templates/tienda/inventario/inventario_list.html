@@ -2,10 +2,19 @@
 
 {% block content %}
 <div class="container mt-1">
-    
+
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h1>Inventario</h1>
         <div>
+            <a href="{% url 'exportar-productos-excel' %}" class="btn btn-success">
+                <i class="bi bi-file-earmark-excel"></i> Descargar catalogo
+            </a>
+            <a href="{% url 'inventario-historial' %}" class="btn btn-info me-2 text-white">
+                <i class="bi bi-box-seam"></i> Historial
+            </a>
+            <a href="{% url 'proveedor-list' %}" class="btn btn-info me-2 text-white">
+                <i class="bi bi-truck"></i> Proveedores
+            </a>
             <a href="{% url 'categoria-list' %}" class="btn btn-secondary me-2">
                 <i class="bi bi-tags"></i> Categorías
             </a>
@@ -19,79 +28,83 @@
         <div class="card-body">
             <form method="get" class="d-flex mb-0">
                 <input type="text" name="q" value="{{ query }}" placeholder="Buscar por nombre..."
-                        class="form-control me-2">
+                    class="form-control me-2">
                 <button type="submit" class="btn btn-primary">
                     <i class="bi bi-search"></i> Buscar
                 </button>
-            </form>  
+            </form>
         </div>
     </div>
 
     <div class="table-responsive" style="max-height: 60vh; overflow-y: auto;">
 
-    <table class="table table-bordered mb-0">
-        
-        <thead class="table-primary sticky-top">
-            <tr>
-                <th>Nombre</th>
-                <th>Categorías</th>
-                <th>Precio</th>
-                <th>Stock</th>
-                <th class="text-center">Acciones</th>
-            </tr>
-        </thead>
+        <table class="table table-bordered mb-0">
 
-        <tbody>
-            {% for i in productos %}
-            <tr>
-                <td class="fw-bold text-black">{{ i.nombre }}</td>
+            <thead class="table-primary sticky-top">
+                <tr>
+                    <th>Nombre</th>
+                    <th>Categorías</th>
+                    <th>Precio</th>
+                    <th>Stock</th>
+                    <th class="text-center">Acciones</th>
+                </tr>
+            </thead>
 
-                <td>
-                    {% for c in i.categoria.all %}
-                        <span class="fw-bold text-black me-1">{{ c.nombre }}</span>
-                    {% empty %}
+            <tbody>
+                {% for i in productos %}
+                <tr>
+                    <td class="fw-bold text-black">{{ i.nombre }}</td>
+
+                    <td>
+                        {% for c in i.categoria.all %}
+                        <span class="badge bg-primary fw-bold text-black me-1">{{ c.nombre }}</span>
+                        {% empty %}
                         <span>Sin categoría</span>
-                    {% endfor %}
-                </td>
+                        {% endfor %}
+                    </td>
 
-                <td class="text-black">${{ i.precio }} CLP</td>
+                    <td class="text-black">${{ i.precio }} CLP</td>
 
-                <td>
-                    {% if i.inventario %}
+                    <td>
+                        {% if i.inventario %}
                         {% if i.inventario.stock > 5 %}
-                            <span class="badge bg-success">{{ i.inventario.stock }}</span>
+                        <span class="badge bg-success">{{ i.inventario.stock }}</span>
                         {% else %}
-                            <span class="badge bg-danger">{{ i.inventario.stock }}</span>
+                        <span class="badge bg-danger">{{ i.inventario.stock }}</span>
                         {% endif %}
-                    {% else %}
+                        {% else %}
                         <span>N/A</span>
-                    {% endif %}
-                </td>
+                        {% endif %}
+                    </td>
 
-                <td class="text-center">
-                    <div class="btn-group">
-                        <a href="{% url 'inventario-update' i.id %}" class="btn btn-sm btn-warning">
-                            <i class="bi bi-box-seam"></i>
-                        </a>
-                        <a href="{% url 'producto-update' i.id %}" class="btn btn-sm btn-primary">
-                            <i class="bi bi-pencil-fill"></i>
-                        </a>
-                        <a href="{% url 'producto-delete' i.id %}" class="btn btn-sm btn-danger">
-                            <i class="bi bi-trash-fill"></i>
-                        </a>
-                    </div>
-                </td>
+                    <td class="text-center">
+                        <div class="btn-group">
+                            <a href="{% url 'inventario-update' i.id %}" class="btn btn-sm btn-warning">
+                                <i class="bi bi-box-seam"></i>
+                            </a>
+                            <a href="{% url 'producto-update' i.id %}" class="btn btn-sm btn-primary">
+                                <i class="bi bi-pencil-fill"></i>
+                            </a>
+                            <a href="{% url 'producto-delete' i.id %}" class="btn btn-sm btn-danger">
+                                <i class="bi bi-trash-fill"></i>
+                            </a>
+                            <a href="{% url 'imprimir-etiqueta' i.id %}" class="btn btn-sm btn-info" target="_blank"
+                                title="Imprimir Etiqueta">
+                                <i class="bi bi-printer"></i>
+                            </a>
+                        </div>
+                    </td>
 
-            </tr>
-            {% empty %}
+                </tr>
+                {% empty %}
                 <tr>
                     <td colspan="5" class="text-center">No se encontraron productos.</td>
                 </tr>
-            {% endfor %}
-        </tbody>
+                {% endfor %}
+            </tbody>
 
-    </table>
-</div>
+        </table>
+    </div>
 
 </div>
 {% endblock content %}

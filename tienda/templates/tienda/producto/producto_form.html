@@ -1,21 +1,50 @@
 {% extends 'tienda/base.html' %}
-
+{% load static %}
 {% block content %}
-<div class="container mt-4" style="max-width: 500px;">
-    
-    <div class="card p-4 shadow-sm border-0">
-        <h2 class="text-black fw-bold mb-4">Formulario de Usuario</h2>
-        
-        <form method="post">
+<div class="container mt-4" style="max-width: 900px;">
+    <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
+    <div class="card p-4 border-0 shadow-sm">
+        <h2 class="text-black fw-bold mb-4">Formulario de Producto</h2>
+
+        <form method="post" enctype="multipart/form-data">
             {% csrf_token %}
-            {{form}}
-            <div class="d-grid gap-2 mt-4">
-                <button type="submit" class="btn btn-primary">Guardar</button>
-                <a href="{% url 'usuario-list' %}" class="btn btn-secondary">Cancelar</a>
+            <div class="row">
+                {% for field in form %}
+                <div class="mb-3 {% if field.name == 'codigo_barra' %}col-12{% else %}col-md-6{% endif %}">
+                    <label for="{{ field.id_for_label }}" class="form-label fw-bold">{{ field.label }}</label>
+
+                    {% if field.name == 'codigo_barra' %}
+                    <div class="input-group">
+                        {{ field }}
+                        <button type="button" class="btn btn-dark" onclick="activarCamara()">
+                            <i class="bi bi-qr-code-scan"></i> Escanear
+                        </button>
+                    </div>
+
+                    <div id="reader"
+                        style="display:none; width: 100%; max-width: 0px; margin-top: 10px; border-radius: 8px; overflow: hidden; background: #000;">
+                    </div>
+                    <small class="text-muted">Si el producto tiene código, escanéalo aquí.</small>
+
+                    {% else %}
+                    {{ field }}
+                    {% endif %}
+
+                    {% if field.errors %}
+                    <div class="text-danger small mt-1">{{ field.errors }}</div>
+                    {% endif %}
+                </div>
+                {% endfor %}
+            </div>
+
+            <div class="d-flex justify-content-end gap-2 mt-4">
+                <a href="{% url 'inventario-list' %}" class="btn btn-secondary">Cancelar</a>
+                <button type="submit" class="btn btn-success px-4">Guardar</button>
             </div>
 
         </form>
     </div>
 
 </div>
+<script src="{% static 'js/codibara.js' %}"></script>
 {% endblock content %}
