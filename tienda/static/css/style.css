@@ -1,6 +1,3 @@
-
-
-
 /* <----------------------------------------------> */
 .imagenM {
     width: 120px;
@@ -9,9 +6,16 @@
     object-fit: cover;
 }
 
-#side-nav ul li{
+#side-nav ul li {
     max-width: 72%;
     text-align: center;
+}
+
+/* Estilo para el link activo en el sidebar */
+.nav-link.active-link {
+    background-color: rgba(0, 0, 0, 0.3) !important;
+    border-radius: 5px;
+    font-weight: bold;
 }
 
 /**Estilos para el inicio**/
@@ -25,22 +29,55 @@
 /* 1. Estilo base (PC): Se comporta como una columna flex normal */
 .sidebar-manual {
     width: 280px;
-    transition: left 0.3s ease; /* Animación suave al entrar/salir */
+    transition: left 0.3s ease;
+    /* Animación suave al entrar/salir */
 }
 
 /* 2. Estilo para Móvil (Pantallas menores a 768px) */
 @media (max-width: 768px) {
     .sidebar-manual {
-        position: fixed; /* Se fija encima del contenido */
+        position: fixed;
+        /* Se fija encima del contenido */
         top: 0;
-        left: -280px;    /* ESCONDIDO: Lo movemos fuera de la pantalla a la izquierda */
-        height: 100vh;   /* Altura completa */
-        z-index: 1000;   /* Asegura que flote sobre todo lo demás */
+        left: -280px;
+        /* ESCONDIDO: Lo movemos fuera de la pantalla a la izquierda */
+        height: 100vh;
+        /* Altura completa */
+        z-index: 1000;
+        /* Asegura que flote sobre todo lo demás */
     }
 
     /* 3. Clase activa: Cuando agreguemos esta clase con JS, el menú aparece */
     .sidebar-manual.activo {
-        left: 0;         /* VISIBLE: Lo devolvemos a su sitio */
-        box-shadow: 2px 0 5px rgba(0,0,0,0.5); /* Sombra para que se vea bonito encima */
+        left: 0;
+        /* VISIBLE: Lo devolvemos a su sitio */
+        box-shadow: 2px 0 5px rgba(0, 0, 0, 0.5);
+        /* Sombra para que se vea bonito encima */
     }
+}
+
+
+.imagen-container {
+    height: 200px;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #f8f9fa;
+}
+
+.imagen-container img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.sin-imagen {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 3rem;
+    color: #dee2e6;
 }

@@ -1,5 +1,5 @@
 from django import forms
-from .models import Producto, Categoria, Inventario
+from .models import Producto, Categoria, Inventario, Proveedor
 
 class ProductoForm(forms.ModelForm):
     stock = forms.IntegerField(label='Stock', min_value=0, 
@@ -50,3 +50,11 @@ class CategoriaForm(forms.ModelForm):
     class Meta:
         model=Categoria
         fields="__all__"
+
+class ProveedorForm(forms.ModelForm):
+    class Meta:
+        model = Proveedor
+        fields = "__all__"
+        widgets = {
+            'nombre': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Nombre del proveedor'}),
+        }

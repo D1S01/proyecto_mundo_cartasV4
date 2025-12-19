@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Etiqueta {{ producto.nombre }}</title>
+    <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.5/dist/JsBarcode.all.min.js"></script>
+    <style>
+        body {
+            text-align: center;
+            font-family: sans-serif;
+            margin-top: 20px;
+        }
+
+        .etiqueta-container {
+            border: 1px dashed black;
+            display: inline-block;
+            padding: 15px;
+            border-radius: 10px;
+        }
+
+        h3 {
+            margin: 5px 0;
+        }
+
+        .precio {
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+
+        @media print {
+            #btn-imprimir {
+                display: none;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="etiqueta-container">
+        <h3>{{ producto.nombre }}</h3>
+
+        <svg id="barcode"></svg>
+
+        <div class="precio">${{ producto.precio }}</div>
+    </div>
+
+    <br><br>
+    <button id="btn-imprimir" onclick="window.print()">Imprimir</button>
+
+    <script>
+       
+        JsBarcode("#barcode", "{{ producto.codigo_barra }}", {
+            format: "CODE128",
+            lineColor: "#000",
+            width: 2,
+            height: 50,
+            displayValue: true
+        });
+    </script>
+
+</body>
+
+</html>

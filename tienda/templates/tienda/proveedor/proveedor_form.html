@@ -5,7 +5,7 @@
     <div class="card shadow">
         <div class="card-header bg-primary text-white">
             <h3 class="mb-0">
-                <i class="bi bi-tag-fill"></i> {{ action }} Categoría
+                <i class="bi bi-building-fill"></i> {{ action }} Proveedor
             </h3>
         </div>
         <div class="card-body">
@@ -15,17 +15,16 @@
                     {{ form.as_p }}
                 </div>
                 <div class="d-flex justify-content-end gap-2">
-                    <a class="btn btn-secondary" href="{% url 'categoria-list' %}">
+                    <a class="btn btn-secondary" href="{% url 'proveedor-list' %}">
                         <i class="bi bi-arrow-left"></i> Volver
                     </a>
                     <button class="btn btn-success">
-                        <i class="bi bi-check-circle"></i> {{ action }} Categoría
+                        <i class="bi bi-check-circle"></i> {{ action }} Proveedor
                     </button>
                 </div>
             </form>
         </div>
     </div>
 </div>
-
 
 {% endblock content %}

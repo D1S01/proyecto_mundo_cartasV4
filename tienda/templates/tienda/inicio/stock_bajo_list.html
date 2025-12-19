@@ -4,26 +4,51 @@
 
 <h2>Stock Bajo</h2>
 <hr>
-{% if all_stock_bajo %}
-    <table border="1" cellpadding="5" class="table table-sm table-hover">
-        <thead>
-            <tr>
-                <th>Producto</th>
-                <th>Stock</th>
-            </tr>
-        </thead>
-        <tbody class="table-group-divider">
-            {% for item in all_stock_bajo %}
-            <tr>
-                <td>{{ item.producto.nombre }}</td>
-                <td>{{ item.stock }}</td>
-            </tr>
-            {% endfor %}
-        </tbody>
-        
-    </table>
+
+<h4>Stock Crítico</h4>
+{% if stock_critico %}
+<table border="1" cellpadding="5" class="table table-sm table-hover mb-4">
+    <thead>
+        <tr>
+            <th>Producto</th>
+            <th class="text-center">Stock</th>
+        </tr>
+    </thead>
+    <tbody class="table-group-divider">
+        {% for item in stock_critico %}
+        <tr>
+            <td>{{ item.producto.nombre }}</td>
+            <td class="text-center text-danger">{{ item.stock }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
 {% else %}
-    <p>No hay productos con stock bajo.</p>
+<p class="text-muted">No hay productos con stock crítico.</p>
 {% endif %}
+
+<h4>Stock Bajo (No Crítico)</h4>
+{% if stock_no_critico %}
+<table border="1" cellpadding="5" class="table table-sm table-hover mb-4">
+    <thead>
+        <tr>
+            <th>Producto</th>
+            <th class="text-center">Stock</th>
+        </tr>
+    </thead>
+    <tbody class="table-group-divider">
+        {% for item in stock_no_critico %}
+        <tr>
+            <td>{{ item.producto.nombre }}</td>
+            <td class="text-center text-danger ">{{ item.stock }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% else %}
+<p class="text-muted">No hay productos con stock bajo no crítico.</p>
+{% endif %}
+
 <a href="{% url 'home' %}" class="btn btn-primary">Volver al inicio</a>
+
 {% endblock content %}

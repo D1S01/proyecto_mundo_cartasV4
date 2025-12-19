@@ -1,0 +1,40 @@
+{% extends 'tienda/base.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2 class="mb-4">Movimientos de Inventario</h2>
+    <a href="{% url 'inventario-list' %}" class="btn btn-primary">Volver</a>
+    <div class="card shadow-sm border-0">
+        <div class="table-responsive">
+            <table class="table align-middle mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th>Fecha y Hora</th>
+                        <th>Producto</th>
+                        <th class="text-center">Tipo</th>
+                        <th class="text-center">Cantidad</th>
+                        <th>Referencia</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for m in movimientos %}
+                    <tr>
+                        <td>{{ m.fecha|date:"d/m/Y H:i" }}</td>
+                        <td>{{ m.producto.nombre }}</td>
+                        <td class="text-center">
+                            {% if m.tipo == 'entrada' %}
+                            <span class="badge bg-success">ENTRADA</span>
+                            {% else %}
+                            <span class="badge bg-danger">SALIDA</span>
+                            {% endif %}
+                        </td>
+                        <td class="text-center">{{ m.cantidad }}</td>
+                        <td class="">{{ m.referencia }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

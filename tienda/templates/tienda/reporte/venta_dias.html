@@ -2,58 +2,60 @@
 
 {% block content %}
 <div class="container mt-4">
-    
+
     <div class="card shadow-sm border-0">
         <div class="card-body p-4">
-            
-            <div class="d-flex align-items-center justify-content-between mb-4">
-                <div class="d-flex align-items-center">
+
+            <div class="d-flex align-items-center mb-4">
                 <i class="bi bi-calendar-week text-primary fs-3 me-2"></i>
-                <h2 class="text-black fw-bold m-0">Ventas por Día - {{mes_legible|capfirst}} {{ año }}</h2>
-                </div>
-                <a href="{% url 'reporte_meses' año %}" class="btn btn-primary btn-sm">Volver</a>
+                <h2 class="text-black fw-bold m-0">Ventas por Día - {% if mes == 1 %} Enero {% elif mes == 2 %} Febrero
+                    {% elif mes == 3 %} Marzo {% elif mes == 4 %} Abril {% elif mes == 5 %} Mayo {% elif mes == 6 %}
+                    Junio {% elif mes == 7 %} Julio {% elif mes == 8 %} Agosto {% elif mes == 9 %} Septiembre {% elif
+                    mes == 10 %} Octubre {% elif mes == 11 %} Noviembre {% elif mes == 12 %} Diciembre {% endif %}</h2>
             </div>
+            <a href="{% url 'reporte_meses' año %}" class="btn btn-primary btn-sm">Volver</a>
 
             {% if dias %}
-                <div class="list-group">
-                    {% for i in dias %}
-                        <a href="{% url 'reporte_ventas' i %}" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center p-3">
-                            <span class="fw-bold text-dark">
-                                <i class="bi bi-calendar-date me-2 text-muted"></i> {{ i|date:"d"}} - {{ i|date:"l"|capfirst }}
-                            </span>
-                            <i class="bi bi-chevron-right text-muted"></i>
-                        </a>
-                    {% endfor %}
-                </div>
+            <div class="list-group">
+                {% for i in dias %}
+                <a href="{% url 'reporte_ventas' i año mes %}"
+                    class="list-group-item list-group-item-action d-flex justify-content-between align-items-center p-3">
+                    <span class="fw-bold text-dark">
+                        <i class="bi bi-calendar-date me-2 text-muted"></i> {{ i|date:"d"}} - {{ i|date:"l" }}
+                    </span>
+                    <i class="bi bi-chevron-right text-muted"></i>
+                </a>
+                {% endfor %}
+            </div>
 
-                {% comment %} <table id="tablaCategorias" class="table table-striped mt-4">
-                    <thead>
-                        <tr>
-                            <th>Día</th>
-                            <th>Número de Ventas</th>
-                            <th>Total de Ventas</th>
-                            <th>Acciones</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for i in dias %}
-                        <tr>
-                            <td>{{ i }}</td>
-                            <td> {{i}} </td>
-                            <td>{{i}}</td>
-                            <td><a href="{% url 'reporte_ventas' i %}">Ver</a></td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table> {% endcomment %}
+            {% comment %} <table id="tablaCategorias" class="table table-striped mt-4">
+                <thead>
+                    <tr>
+                        <th>Día</th>
+                        <th>Número de Ventas</th>
+                        <th>Total de Ventas</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for i in dias %}
+                    <tr>
+                        <td>{{ i }}</td>
+                        <td> {{i}} </td>
+                        <td>{{i}}</td>
+                        <td><a href="{% url 'reporte_ventas' i %}">Ver</a></td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table> {% endcomment %}
             {% else %}
-                <div class="alert alert-secondary text-center py-4" role="alert">
-                    <i class="bi bi-inbox fs-1 d-block mb-2 text-muted"></i>
-                    No hay ventas registradas aún.
-                </div>
+            <div class="alert alert-secondary text-center py-4" role="alert">
+                <i class="bi bi-inbox fs-1 d-block mb-2 text-muted"></i>
+                No hay ventas registradas aún.
+            </div>
             {% endif %}
 
-            
+
 
         </div>
     </div>
@@ -62,18 +64,18 @@
 
 <script>
     document.addEventListener('DOMContentLoaded', function () {
-      var myTable = document.querySelector('#tablaCategorias')
-      new DataTable(myTable, {
-        searchable: true,
-        fixedHeight: true,
-        perPage: 5,
-        labels: {
-          placeholder: 'Buscar...',
-          perPage: '{select} registros por página',
-          noRows: 'No se encontraron categorías',
-          info: 'Mostrando {start} a {end} de {rows} categorías'
-        }
-      })
+        var myTable = document.querySelector('#tablaCategorias')
+        new DataTable(myTable, {
+            searchable: true,
+            fixedHeight: true,
+            perPage: 5,
+            labels: {
+                placeholder: 'Buscar...',
+                perPage: '{select} registros por página',
+                noRows: 'No se encontraron categorías',
+                info: 'Mostrando {start} a {end} de {rows} categorías'
+            }
+        })
     })
 </script>
 {% endblock content %}

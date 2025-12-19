@@ -1,0 +1,53 @@
+{% extends 'tienda/base.html' %}
+
+{% block content %}
+
+<div class="container mt-4">
+    <h2 class="mb-4">{{ proveedor.nombre }}</h2>
+
+    <div class="mb-3">
+        <a href="{% url 'proveedor-list' %}" class="btn btn-secondary">
+            <i class="bi bi-arrow-left"></i> Volver a Proveedores
+        </a>
+    </div>
+
+    <div class="card shadow-sm">
+        <div class="card-header bg-light">
+            <h5 class="mb-0">Productos Asociados</h5>
+        </div>
+        <div class="card-body">
+            {% if productos %}
+            <table class="table table-hover table-striped mb-0">
+                <thead class="table-dark">
+                    <tr>
+                        <th>Producto</th>
+                        <th>Stock</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for producto in productos %}
+                    <tr>
+                        <td>
+                            <strong>{{ producto.nombre }}</strong>
+                        </td>
+                        <td>
+                            {% if producto.inventario %}
+                            {{ producto.inventario.stock }}
+                            {% else %}
+                            -
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% else %}
+            <div class="text-center py-4">
+                <p class="text-muted mt-2">No hay productos asociados a este proveedor.</p>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+{% endblock content %}

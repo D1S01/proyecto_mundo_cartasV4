@@ -1,73 +1,70 @@
 {% extends 'tienda/base.html' %}
 
 {% block content %}
+<div class="container-fluid py-4">
+    <h1 class="mb-4 fw-bold">Inicio</h1>
 
-<h1>inicio</h1>
-<section class="d-flex flex-column cards">
-    <div>
-        <h3 class="text-center">Resumen</h3>
-    </div>
-    <div class="d-flex justify-content-around flex-row flex-wrap gap-3">   
-        <div class="text-center card" style="background-color: #d9d9d9; border: none; min-width: 155px; max-height: 100px;">
-            <p>Productos:</p>
-            <p>{{ productos }}</p>
-        </div>
-        {% comment %} <div class="text-align-center card">
-            <p>Ventas totales:</p>
-            <p>{{ ventas }}</p>
-        </div> {% endcomment %}
-        <div class="text-center card" style="background-color: #d9d9d9; border: none; min-width: 155px; max-height: 100px;">
-            <p>Ventas de hoy:</p>
-            <p>{{ ventas_hoy }}</p>
-        </div>
-        <div class="text-center card" style="background-color: #d9d9d9; border: none; min-width: 155px; max-height: 100px;">
-            <p>Stock bajo:</p>
-            <p><a href="{% url 'stock_bajo_list' %}" style="text-decoration: none; color: red;">{{ stock_bajo }}</a></p>
-            {% comment %} {% for item in all_stock_bajo %}
-                <p>{{ item.producto.nombre }} - {{ item.stock }}</p>
-            {% endfor %} {% endcomment %}
-        </div>
-    </div>
-    <div class="mt-4 card p-2" style="overflow-y: scroll; max-height: 260px; min-height: 250px; background-color: #d9d9d9; border: none;">
-        <p>Actividades recientes</p>
+    <section class="d-flex flex-column gap-4">
         <div>
-            {% for venta in ultimas_5_ventas %}
-                <div class="d-flex justify-content-between">
-                    <span>Venta #{{ venta.id }}</span>
-                    {% comment %} <span>{{ venta.fecha_venta }}</span> {% endcomment %}
-                    {% load tz %}
-                    {% comment %} <span>{{ venta.fecha_venta|localtime }}</span> {% endcomment %}
-                    <span>{{ venta.fecha_venta|localtime|date:"d/m/Y H:i" }}</span>
+            <h3 class="mb-3 text-center">Resumen</h3>
+            <div class="row g-3">
+
+                <div class="col-sm-6 col-md-4">
+                    <div class="p-3 text-center bg-light rounded shadow-sm">
+                        <p class="mb-1 text-muted">Productos</p>
+                        <h4 class="mb-0 fw-bold">{{ productos }}</h4>
+                    </div>
                 </div>
 
-                <p><strong>Vendedor:</strong> {{ venta.usuario.usuarios.nombre_completo }}</p>
+                <div class="col-sm-6 col-md-4">
+                    <div class="p-3 text-center bg-light rounded shadow-sm">
+                        <p class="mb-1 text-muted">Ventas de hoy</p>
+                        <h4 class="mb-0 fw-bold">{{ ventas_hoy }}</h4>
+                    </div>
+                </div>
 
-                
-                <table border="1" cellpadding="5" class="table">
-                    <tr>
-                        <th>Producto</th>
-                        <th>Cantidad</th>
-                        <th>Costo Unitario</th>
-                        <th>Costo Total</th>
-                    </tr>
+                <div class="col-sm-6 col-md-4">
+                    <div class="p-3 text-center bg-light rounded shadow-sm">
+                        <p class="mb-1 text-muted">Stock bajo</p>
+                        <h4 class="mb-0 fw-bold">
+                            <a href="{% url 'stock_bajo_list' %}" class="text-danger text-decoration-none">
+                                {{ stock_bajo }}
+                            </a>
+                        </h4>
+                    </div>
+                </div>
 
-                    {% for d in venta.detalle_venta_set.all %}
-                    <tr>
-                        <td>{{ d.producto.nombre }}</td>
-                        <td>{{ d.cantidad }}</td>
-                        <td>{{ d.precio_unitario }}</td>
-                        <td>{{ d.subtotal }}</td>
-                    </tr>
-                    {% endfor %}
-                </table>
-
-        <p><strong>Total Venta:</strong> {{ venta.total }}</p>
-
-        <hr>
-            {% empty %}
-                <p>No hay actividades recientes.</p>
-            {% endfor %}
+            </div>
         </div>
-    </div>
-</section>
+        <div class="p-3 bg-white rounded shadow-sm">
+            <h5 class="mb-3 border-bottom pb-2">
+                <i class="bi bi-clock-history"></i> Actividades Recientes
+            </h5>
+
+            <div style="max-height: 400px; overflow-y: auto;">
+                {% for venta in ultimas_5_ventas %}
+                {% for detalle in venta.detalle_venta_set.all %}
+                <div class="py-2 border-bottom d-flex justify-content-between align-items-center">
+                    <div>
+                        <strong>{{ venta.usuario.usuarios.nombre_completo }}</strong>
+                        <span class="text-muted">
+                            vendió {{ detalle.cantidad }}x {{ detalle.producto.nombre }}
+                        </span>
+                        <small class="d-block text-muted">
+                            {{ venta.fecha_venta|date:"d/m/Y H:i" }}
+                        </small>
+                    </div>
+                    <span class="fw-bold text-success">
+                        ${{ detalle.subtotal }}
+                    </span>
+                </div>
+                {% endfor %}
+                {% empty %}
+                <p class="text-muted">No hay actividades recientes.</p>
+                {% endfor %}
+            </div>
+        </div>
+
+    </section>
+</div>
 {% endblock content %}

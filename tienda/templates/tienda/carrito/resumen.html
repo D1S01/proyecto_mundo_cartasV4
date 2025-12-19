@@ -53,24 +53,55 @@
                             <strong>Total a Pagar</strong>
                         </td>
                         <td class="text-end">
-                            <strong>${{total_final}}</strong>
+                            <strong>${{total_final|floatformat:2}}</strong>
                         </td>
                     </tr>
                 </table>
+
+                <!-- Discount Section -->
+                <form method="post" action="{% url 'resumen_pago' %}" class="mt-3">
+                    {% csrf_token %}
+                    <div class="mb-2">
+                        <label for="descuento" class="form-label">Descuento (%):</label>
+                        <div class="input-group">
+                            <input type="number" class="form-control" id="descuento" name="descuento" min="0" max="100"
+                                step="0.01" value="{{descuento_porcentaje|default:0}}" placeholder="0">
+                            <button type="submit" class="btn btn-primary">Aplicar Descuento</button>
+                        </div>
+                    </div>
+                </form>
+
+                {% if descuento_porcentaje > 0 %}
+                <table class="table mt-2">
+                    <tr>
+                        <td>Descuento ({{descuento_porcentaje}}%):</td>
+                        <td class="text-end text-success">-${{descuento_dinero|floatformat:2}}</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Total con Descuento:</strong></td>
+                        <td class="text-end"><strong>${{total_con_descuento|floatformat:2}}</strong></td>
+                    </tr>
+                </table>
+                {% endif %}
             </div>
-            
+
             <div class="card">
                 <h3>Forma de Pago</h3>
                 <div class="card-body">
-                    <form action="{% url "pagar" %}" method="post">
+                    <form action="{% url 'pagar' %}" method="post">
                         {% csrf_token %}
                         <div class="form-check">
                             <input class="form-check-input" type="radio" name="metodo_pago" value="efectivo" required>
                             <label>Efectivo</label>
                         </div>
-                         <div class="form-check">
+                        <div class="form-check">
                             <input class="form-check-input" type="radio" name="metodo_pago" value="tarjeta" required>
                             <label>Tarjeta</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="metodo_pago" value="transferencia"
+                                required>
+                            <label>Tranferencia</label>
                         </div>
                         <div>
                             <button type="submit" class="btn btn-success">Confirmar</button>
@@ -81,7 +112,7 @@
             </div>
         </div>
     </div>
-    
+
 </div>
 
 {% endblock %}
